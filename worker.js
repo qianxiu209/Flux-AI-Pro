@@ -1,13 +1,13 @@
 // =================================================================================
 //  项目: multi-provider-image-generator
-//  版本: 8.6.1 (移除成人內容功能 + 完整 Web UI)
+//  版本: 8.7.0 (添加图片历史记录功能)
 //  作者: Enhanced by AI Assistant
-//  日期: 2025-12-10
+//  日期: 2025-12-11
 // =================================================================================
 
 const CONFIG = {
   PROJECT_NAME: "multi-provider-image-generator",
-  PROJECT_VERSION: "8.6.1",
+  PROJECT_VERSION: "8.7.0",
   API_MASTER_KEY: "1",
   
   PROVIDERS: {
@@ -182,7 +182,7 @@ const CONFIG = {
   
   HISTORY: {
     MAX_ITEMS: 100,
-    STORAGE_KEY: "image_generation_history"
+    STORAGE_KEY: "flux_ai_history"
   }
 };
 
@@ -216,6 +216,7 @@ class PromptAnalyzer {
         return 'economy';
     }
 }
+
 class HDOptimizer {
     static optimize(prompt, negativePrompt, model, width, height, qualityMode = 'standard', autoHD = true) {
         if (!autoHD || !CONFIG.HD_OPTIMIZATION.enabled) {
@@ -483,6 +484,7 @@ class MultiProviderRouter {
 function corsHeaders(additionalHeaders = {}) {
     return { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With', 'Access-Control-Max-Age': '86400', ...additionalHeaders };
 }
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -620,13 +622,70 @@ function handleUI() {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flux AI Pro v${CONFIG.PROJECT_VERSION}</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);color:#fff;padding:20px;min-height:100vh}.container{max-width:1400px;margin:0 auto}h1{color:#f59e0b;text-align:center;margin-bottom:10px;font-size:36px;font-weight:800;text-shadow:0 0 30px rgba(245,158,11,0.6)}.badge{background:linear-gradient(135deg,#10b981 0%,#059669 100%);padding:6px 14px;border-radius:20px;font-size:14px;margin-left:10px}.subtitle{text-align:center;color:#9ca3af;margin-bottom:20px;font-size:15px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}@media (max-width:768px){.grid{grid-template-columns:1fr}}.box{background:rgba(26,26,26,0.95);padding:24px;border-radius:16px;border:1px solid rgba(255,255,255,0.1)}h3{color:#f59e0b;margin-bottom:18px;font-size:18px;font-weight:700}label{display:block;margin:16px 0 8px 0;color:#e5e7eb;font-weight:600;font-size:13px}select,textarea,input{width:100%;padding:12px;margin:0;background:#2a2a2a;border:1px solid #444;color:#fff;border-radius:10px;font-size:14px;font-family:inherit;transition:all 0.3s}select:focus,textarea:focus,input:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.15)}textarea{resize:vertical;min-height:90px}.quality-mode-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}.quality-option input[type="radio"]{position:absolute;opacity:0}.quality-label{display:block;padding:16px 12px;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:12px;text-align:center;cursor:pointer;transition:all 0.3s}.quality-label:hover{background:rgba(255,255,255,0.08);border-color:rgba(245,158,11,0.5)}.quality-option input[type="radio"]:checked + .quality-label{background:rgba(245,158,11,0.2);border-color:#f59e0b}.quality-name{font-size:14px;font-weight:600;color:#e5e7eb;margin-bottom:4px}.quality-desc{font-size:11px;color:#9ca3af}button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;transition:all 0.3s;box-shadow:0 4px 15px rgba(245,158,11,0.4)}button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.6)}button:disabled{background:#555;cursor:not-allowed;transform:none;box-shadow:none}#result{margin-top:20px}.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:20px}.result img{width:100%;border-radius:12px;cursor:pointer;transition:transform 0.3s}.result img:hover{transform:scale(1.02)}.success{background:rgba(16,185,129,0.15);border:1px solid #10b981;padding:16px;border-radius:12px;color:#10b981}.error{background:rgba(239,68,68,0.15);border:1px solid #ef4444;padding:16px;border-radius:12px;color:#ef4444}.checkbox-group{display:flex;align-items:center;gap:10px;margin:12px 0}.checkbox-group input[type="checkbox"]{width:auto;margin:0}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);color:#fff;padding:20px;min-height:100vh}.container{max-width:1400px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:15px}
+.header-left{flex:1}
+h1{color:#f59e0b;margin:0;font-size:36px;font-weight:800;text-shadow:0 0 30px rgba(245,158,11,0.6)}
+.badge{background:linear-gradient(135deg,#10b981 0%,#059669 100%);padding:6px 14px;border-radius:20px;font-size:14px;margin-left:10px}
+.subtitle{color:#9ca3af;margin-top:8px;font-size:15px}
+.history-btn{background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.3s;position:relative}
+.history-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.4)}
+.history-badge{position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.history-panel{position:fixed;top:0;right:0;width:400px;max-width:90vw;height:100vh;background:rgba(26,26,26,0.98);backdrop-filter:blur(10px);box-shadow:-4px 0 20px rgba(0,0,0,0.5);z-index:1000;overflow-y:auto;display:none;animation:slideIn 0.3s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.history-header{position:sticky;top:0;background:rgba(15,15,15,0.95);backdrop-filter:blur(10px);padding:20px;border-bottom:1px solid rgba(255,255,255,0.1);z-index:10}
+.history-header h2{color:#f59e0b;font-size:20px;margin-bottom:15px}
+.history-actions{display:flex;gap:10px}
+.btn-clear{flex:1;padding:10px;background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#ef4444;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn-clear:hover{background:rgba(239,68,68,0.3)}
+.btn-close{flex:1;padding:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn-close:hover{background:rgba(255,255,255,0.15)}
+.history-list{padding:15px}
+.history-item{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:15px;margin-bottom:15px;transition:all 0.3s}
+.history-item:hover{background:rgba(255,255,255,0.08);border-color:rgba(245,158,11,0.5)}
+.history-item img{width:100%;border-radius:8px;margin-bottom:12px;cursor:pointer;transition:transform 0.3s}
+.history-item img:hover{transform:scale(1.02)}
+.history-info{font-size:13px}
+.history-prompt{color:#e5e7eb;margin-bottom:8px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.history-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.history-meta span{color:#9ca3af;font-size:12px;background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:6px}
+.history-time{color:#6b7280;font-size:11px;margin-bottom:10px}
+.history-actions-item{display:flex;gap:8px}
+.history-actions-item button{flex:1;padding:8px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn-load{background:rgba(139,92,246,0.2);border:1px solid #8b5cf6;color:#a78bfa}
+.btn-load:hover{background:rgba(139,92,246,0.3)}
+.btn-delete{background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#ef4444}
+.btn-delete:hover{background:rgba(239,68,68,0.3)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}@media (max-width:768px){.grid{grid-template-columns:1fr}.history-panel{width:100vw}}
+.box{background:rgba(26,26,26,0.95);padding:24px;border-radius:16px;border:1px solid rgba(255,255,255,0.1)}h3{color:#f59e0b;margin-bottom:18px;font-size:18px;font-weight:700}label{display:block;margin:16px 0 8px 0;color:#e5e7eb;font-weight:600;font-size:13px}select,textarea,input{width:100%;padding:12px;margin:0;background:#2a2a2a;border:1px solid #444;color:#fff;border-radius:10px;font-size:14px;font-family:inherit;transition:all 0.3s}select:focus,textarea:focus,input:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.15)}textarea{resize:vertical;min-height:90px}
+.quality-mode-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}.quality-option input[type="radio"]{position:absolute;opacity:0}.quality-label{display:block;padding:16px 12px;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:12px;text-align:center;cursor:pointer;transition:all 0.3s}.quality-label:hover{background:rgba(255,255,255,0.08);border-color:rgba(245,158,11,0.5)}.quality-option input[type="radio"]:checked + .quality-label{background:rgba(245,158,11,0.2);border-color:#f59e0b}.quality-name{font-size:14px;font-weight:600;color:#e5e7eb;margin-bottom:4px}.quality-desc{font-size:11px;color:#9ca3af}
+button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;transition:all 0.3s;box-shadow:0 4px 15px rgba(245,158,11,0.4)}button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.6)}button:disabled{background:#555;cursor:not-allowed;transform:none;box-shadow:none}#result{margin-top:20px}.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:20px}.result img{width:100%;border-radius:12px;cursor:pointer;transition:transform 0.3s}.result img:hover{transform:scale(1.02)}.success{background:rgba(16,185,129,0.15);border:1px solid #10b981;padding:16px;border-radius:12px;color:#10b981}.error{background:rgba(239,68,68,0.15);border:1px solid #ef4444;padding:16px;border-radius:12px;color:#ef4444}.checkbox-group{display:flex;align-items:center;gap:10px;margin:12px 0}.checkbox-group input[type="checkbox"]{width:auto;margin:0}
 </style>
 </head>
 <body>
 <div class="container">
+<div class="header">
+<div class="header-left">
 <h1>🎨 Flux AI Pro<span class="badge">v${CONFIG.PROJECT_VERSION}</span></h1>
 <p class="subtitle">17個模型 · 12種風格 · 3檔質量 · 智能HD優化 · 完全免費</p>
+</div>
+<button onclick="toggleHistory()" class="history-btn">
+📜 历史记录
+<span id="historyBadge" class="history-badge" style="display:none">0</span>
+</button>
+</div>
+
+<div id="historyPanel" class="history-panel">
+<div class="history-header">
+<h2>📸 图片历史</h2>
+<div class="history-actions">
+<button onclick="clearAllHistory()" class="btn-clear">🗑️ 清空</button>
+<button onclick="toggleHistory()" class="btn-close">✕ 关闭</button>
+</div>
+</div>
+<div id="historyList" class="history-list"></div>
+</div>
+
 <div class="grid">
 <div class="box">
 <h3>📝 生成設置</h3>
@@ -711,11 +770,149 @@ ${Object.entries(CONFIG.PRESET_SIZES).map(([k,v])=>`<option value="${k}" ${k==='
 <div id="result"></div>
 </div>
 <script>
+const STORAGE_KEY='flux_ai_history';
+const MAX_HISTORY=100;
+
+class HistoryManager{
+static save(record){
+try{
+let history=this.getAll();
+record.id=Date.now();
+record.timestamp=new Date().toISOString();
+history.unshift(record);
+if(history.length>MAX_HISTORY)history=history.slice(0,MAX_HISTORY);
+localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
+this.updateBadge();
+return true;
+}catch(e){
+console.error('保存失败:',e);
+return false;
+}
+}
+static getAll(){
+try{
+const data=localStorage.getItem(STORAGE_KEY);
+return data?JSON.parse(data):[];
+}catch(e){
+console.error('读取失败:',e);
+return[];
+}
+}
+static delete(id){
+try{
+let history=this.getAll();
+history=history.filter(item=>item.id!==id);
+localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
+this.updateBadge();
+return true;
+}catch(e){
+console.error('删除失败:',e);
+return false;
+}
+}
+static clear(){
+try{
+localStorage.removeItem(STORAGE_KEY);
+this.updateBadge();
+return true;
+}catch(e){
+console.error('清空失败:',e);
+return false;
+}
+}
+static updateBadge(){
+const count=this.getAll().length;
+const badge=document.getElementById('historyBadge');
+if(badge){
+badge.textContent=count;
+badge.style.display=count>0?'inline-block':'none';
+}
+}
+static loadParams(record){
+document.getElementById('prompt').value=record.prompt||'';
+document.getElementById('negativePrompt').value=record.negativePrompt||'';
+document.getElementById('model').value=record.model||'flux';
+document.getElementById('style').value=record.style||'none';
+document.getElementById('width').value=record.width||1024;
+document.getElementById('height').value=record.height||1024;
+document.getElementById('widthValue').textContent=record.width||1024;
+document.getElementById('heightValue').textContent=record.height||1024;
+document.getElementById('seed').value=record.seed||-1;
+const qualityRadio=document.querySelector(\`input[name="quality"][value="\${record.qualityMode||'standard'}"]\`);
+if(qualityRadio)qualityRadio.checked=true;
+toggleHistory();
+alert('✅ 参数已加载!');
+}
+}
+
+function toggleHistory(){
+const panel=document.getElementById('historyPanel');
+if(panel.style.display==='none'||!panel.style.display){
+showHistory();
+panel.style.display='block';
+}else{
+panel.style.display='none';
+}
+}
+
+function showHistory(){
+const history=HistoryManager.getAll();
+const container=document.getElementById('historyList');
+if(history.length===0){
+container.innerHTML='<div style="text-align:center;padding:40px;color:#9ca3af">📭 暂无历史记录</div>';
+return;
+}
+container.innerHTML=history.map(item=>\`
+<div class="history-item">
+<img src="\${item.url}" alt="历史图片" onclick="window.open('\${item.url}')">
+<div class="history-info">
+<div class="history-prompt">\${(item.prompt||'').substring(0,60)}\${(item.prompt||'').length>60?'...':''}</div>
+<div class="history-meta">
+<span>🎨 \${item.model}</span>
+<span>📐 \${item.width}x\${item.height}</span>
+<span>⭐ \${item.qualityMode||'standard'}</span>
+</div>
+<div class="history-time">\${formatTime(item.timestamp)}</div>
+<div class="history-actions-item">
+<button onclick='HistoryManager.loadParams(\${JSON.stringify(item).replace(/'/g,"\\\\'")})'class="btn-load">🔄 加载</button>
+<button onclick="deleteHistoryItem(\${item.id})"class="btn-delete">🗑️ 删除</button>
+</div>
+</div>
+</div>
+\`).join('');
+}
+
+function deleteHistoryItem(id){
+if(confirm('确定删除这条记录吗？')){
+HistoryManager.delete(id);
+showHistory();
+}
+}
+
+function clearAllHistory(){
+if(confirm('确定清空所有历史记录吗？此操作不可恢复！')){
+HistoryManager.clear();
+showHistory();
+}
+}
+
+function formatTime(timestamp){
+const date=new Date(timestamp);
+const now=new Date();
+const diff=now-date;
+if(diff<60000)return'刚刚';
+if(diff<3600000)return\`\${Math.floor(diff/60000)}分钟前\`;
+if(diff<86400000)return\`\${Math.floor(diff/3600000)}小时前\`;
+if(diff<604800000)return\`\${Math.floor(diff/86400000)}天前\`;
+return date.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'});
+}
+
 const widthSlider=document.getElementById('width');
 const heightSlider=document.getElementById('height');
 const widthValue=document.getElementById('widthValue');
 const heightValue=document.getElementById('heightValue');
 const sizePreset=document.getElementById('sizePreset');
+
 widthSlider.oninput=()=>widthValue.textContent=widthSlider.value;
 heightSlider.oninput=()=>heightValue.textContent=heightSlider.value;
 sizePreset.onchange=()=>{
@@ -727,6 +924,7 @@ widthValue.textContent=preset.width;
 heightValue.textContent=preset.height;
 }
 };
+
 async function generate(){
 const prompt=document.getElementById('prompt').value.trim();
 if(!prompt){alert('請輸入提示詞');return;}
@@ -736,11 +934,7 @@ button.disabled=true;
 button.textContent='生成中...';
 resultDiv.innerHTML='<div class="success">⏳ 正在生成圖像，請稍候...</div>';
 const qualityMode=document.querySelector('input[name="quality"]:checked').value;
-try{
-const response=await fetch('/v1/images/generations',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
+const params={
 prompt:prompt,
 negative_prompt:document.getElementById('negativePrompt').value,
 model:document.getElementById('model').value,
@@ -752,14 +946,32 @@ seed:parseInt(document.getElementById('seed').value),
 auto_optimize:document.getElementById('autoOptimize').checked,
 auto_hd:document.getElementById('autoHD').checked,
 quality_mode:qualityMode
-})
+};
+
+try{
+const response=await fetch('/v1/images/generations',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(params)
 });
 const data=await response.json();
 if(!response.ok)throw new Error(data.error?.message||'生成失敗');
+
 resultDiv.innerHTML='<div class="success"><strong>✅ 生成成功!</strong></div>';
 resultDiv.innerHTML+='<div class="result-grid">';
 data.data.forEach((item,index)=>{
-resultDiv.innerHTML+=\`<div class="result"><img src="\${item.url}" alt="Generated \${index+1}" onclick="window.open('\${item.url}')"><p style="margin-top:12px;font-size:13px;color:#9ca3af">\${item.model} | \${item.width}x\${item.height} | \${item.quality_mode}</p></div>\`;
+HistoryManager.save({
+url:item.url,
+prompt:params.prompt,
+negativePrompt:params.negative_prompt,
+model:item.model,
+style:item.style,
+width:item.width,
+height:item.height,
+qualityMode:item.quality_mode,
+seed:item.seed
+});
+resultDiv.innerHTML+=\`<div class="result"><img src="\${item.url}"alt="Generated \${index+1}"onclick="window.open('\${item.url}')"><p style="margin-top:12px;font-size:13px;color:#9ca3af">\${item.model} | \${item.width}x\${item.height} | \${item.quality_mode}</p></div>\`;
 });
 resultDiv.innerHTML+='</div>';
 }catch(error){
@@ -769,6 +981,10 @@ button.disabled=false;
 button.textContent='🚀 開始生成';
 }
 }
+
+document.addEventListener('DOMContentLoaded',()=>{
+HistoryManager.updateBadge();
+});
 </script>
 </body>
 </html>`;
