@@ -1,67 +1,67 @@
-# 🎨 Flux AI Pro - v8.6.0 智能自適應版
+# 🎨 Flux AI Pro - v8.6.1 智能自适应版
 
 [![Deploy to Cloudflare Workers](https://img.shields.io/badge/Deploy%20to-Cloudflare%20Workers-orange?style=for-the-badge&logo=cloudflare)](https://workers.cloudflare.com/)
-[![Version](https://img.shields.io/badge/Version-8.6.0%20Adaptive-blue?style=for-the-badge)](https://github.com/kinai9661/Flux-AI-Pro)
+[![Version](https://img.shields.io/badge/Version-8.6.1%20Clean-blue?style=for-the-badge)](https://github.com/kinai9661/Flux-AI-Pro)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Cost](https://img.shields.io/badge/Cost-100%25%20FREE-success?style=for-the-badge)](https://pollinations.ai/)
 
-> **基於 Cloudflare Workers 的智能自適應 AI 圖像生成平台**
+> **基於 Cloudflare Workers 的智能自适应 AI 图像生成平台**
 > 
-> **✨ 三檔質量模式** | **🧠 智能提示詞分析** | **⚡ 模型專屬優化** | **🎨 17 個免費模型** | **完全開源**
+> **✨ 三档质量模式** | **🧠 智能提示词分析** | **⚡ 模型专属优化** | **🎨 17 个免费模型** | **完全开源**
 
 ---
 
-## 🆕 v8.6.0 智能自適應亮點
+## 🆕 v8.6.1 最新版本亮点
 
-### 🎯 核心升級
+### 🎯 核心功能
 
-#### 1️⃣ **三檔質量模式系統**
+#### 1️⃣ **三档质量模式系统**
 
-| 模式 | 特性 | 最低分辨率 | 步數倍率 | 適用場景 |
+| 模式 | 特性 | 最低分辨率 | 步数倍率 | 适用场景 |
 |------|------|------------|----------|----------|
-| **⚡ 經濟模式** | 快速出圖 | 1024px | 0.85× | 快速測試、草稿預覽 |
-| **⭐ 標準模式** | 平衡質量 | 1280px | 1.0× | 日常使用、一般項目 |
-| **💎 超高清模式** | 極致質量 | 1536px | 1.35× | 最終交付、專業作品 |
+| **⚡ 经济模式** | 快速出图 | 1024px | 0.85× | 快速测试、草稿预览 |
+| **⭐ 标准模式** | 平衡质量 | 1280px | 1.0× | 日常使用、一般项目 |
+| **💎 超高清模式** | 极致质量 | 1536px | 1.35× | 最终交付、专业作品 |
 
-#### 2️⃣ **智能提示詞分析器**
+#### 2️⃣ **智能提示词分析器**
 
-自動分析提示詞複雜度（0-100%），智能推薦最佳質量模式：
+自动分析提示词复杂度（0-100%），智能推荐最佳质量模式：
 
 ```javascript
-// 分析維度
-✓ 關鍵詞複雜度: 'detailed', 'photorealistic', 'intricate' 等
-✓ 提示詞長度: >100字 / >200字
-✓ 描述深度: 分句數量、細節層次
+// 分析维度
+✓ 关键词复杂度: 'detailed', 'photorealistic', 'intricate' 等
+✓ 提示词长度: >100字 / >200字
+✓ 描述深度: 分句数量、细节层次
 
-// 自動推薦
-複雜度 > 70% → 超高清模式
-複雜度 40-70% → 標準模式
-複雜度 < 40% → 經濟模式
+// 自动推荐
+复杂度 > 70% → 超高清模式
+复杂度 40-70% → 标准模式
+复杂度 < 40% → 经济模式
 ```
 
-#### 3️⃣ **模型專屬質量配置**
+#### 3️⃣ **模型专属质量配置**
 
-每個模型獨立優化參數：
+每个模型独立优化参数：
 
-| 模型 | 質量優先級 | 最低分辨率 | 步數加成 | 引導加成 | 推薦模式 |
+| 模型 | 质量优先级 | 最低分辨率 | 步数加成 | 引导加成 | 推荐模式 |
 |------|------------|------------|----------|----------|----------|
-| **flux-realism** | 極致細節 | 1536px | +25% | +15% | 💎 超高清 |
-| **flux-pro** | 最高質量 | 1536px | +30% | +20% | 💎 超高清 |
-| **flux-anime** | 清晰度 | 1280px | +15% | +10% | ⭐ 標準 |
-| **turbo** | 速度優先 | 1024px | -30% | -15% | ⚡ 經濟 |
+| **flux-realism** | 极致细节 | 1536px | +25% | +15% | 💎 超高清 |
+| **flux-pro** | 最高质量 | 1536px | +30% | +20% | 💎 超高清 |
+| **flux-anime** | 清晰度 | 1280px | +15% | +10% | ⭐ 标准 |
+| **turbo** | 速度优先 | 1024px | -30% | -15% | ⚡ 经济 |
 
-#### 4️⃣ **增強 HD 提示詞庫**
+#### 4️⃣ **增强 HD 提示词库**
 
-三級高清質量提示詞：
+三级高清质量提示词：
 
 - **Basic**: `high quality, detailed, sharp`
-- **Enhanced**: `8k uhd, masterpiece, fine details, professional` (10+ 關鍵詞)
-- **Maximum**: `ultra high quality, razor sharp focus, photographic precision, studio lighting` (20+ 關鍵詞)
+- **Enhanced**: `8k uhd, masterpiece, fine details, professional` (10+ 关键词)
+- **Maximum**: `ultra high quality, razor sharp focus, photographic precision, studio lighting` (20+ 关键词)
 
-#### 5️⃣ **動態參數優化**
+#### 5️⃣ **动态参数优化**
 
 ```javascript
-最終步數 = 基礎步數 × 尺寸倍率 × 風格倍率 × 質量模式倍率 × 模型配置加成
+最终步数 = 基础步数 × 尺寸倍率 × 风格倍率 × 质量模式倍率 × 模型配置加成
 
 // 示例: flux-realism + 1536×1536 + photorealistic + 超高清
 = 28 × 1.15 × 1.1 × 1.35 × 1.25
@@ -70,50 +70,50 @@
 
 ---
 
-## ✨ 保留 v8.5.0 完整功能
+## ✨ 完整功能列表
 
-- ✅ **自動高清 (Auto HD)**: 智能注入 8k/UHD 提示詞 + 尺寸優化
-- ✅ **智能參數優化**: 根據模型/尺寸/風格自動調整 Steps/Guidance
-- ✅ **17 種頂級模型**: Flux Pro/Realism, SD3.5, SDXL Lightning 等
-- ✅ **12 種藝術風格**: 日漫、賽博朋克、寫實、油畫、水彩等
-- ✅ **NSFW 支持 + 私密模式**
-- ✅ **OpenAI 兼容 API**: 直接對接 NextChat/LobeChat
-- ✅ **歷史記錄**: 本地存儲最近 100 條
+- ✅ **自动高清 (Auto HD)**: 智能注入 8k/UHD 提示词 + 尺寸优化
+- ✅ **智能参数优化**: 根据模型/尺寸/风格自动调整 Steps/Guidance
+- ✅ **17 种顶级模型**: Flux Pro/Realism, SD3.5, SDXL Lightning 等
+- ✅ **12 种艺术风格**: 日漫、赛博朋克、写实、油画、水彩等
+- ✅ **私密模式**: 保护用户隐私
+- ✅ **OpenAI 兼容 API**: 直接对接 NextChat/LobeChat
+- ✅ **历史记录**: 本地存储最近 100 条
 
 ---
 
-## 🎨 模型與風格列表
+## 🎨 模型与风格列表
 
-### 17 個免費模型 (Pollinations.ai)
+### 17 个免费模型 (Pollinations.ai)
 
 <details>
-<summary><strong>查看完整列表 (點擊展開)</strong></summary>
+<summary><strong>查看完整列表 (点击展开)</strong></summary>
 
-| 分類 | 模型 ID | 描述 | 質量配置 |
+| 分类 | 模型 ID | 描述 | 质量配置 |
 |------|---------|------|----------|
-| **Flux 標準** | `flux` | 基礎版 | 標準優化 |
-| | `flux-realism` | 超寫實 | 💎 極致細節 |
-| | `flux-anime` | 動漫 | ⭐ 清晰度優先 |
-| | `flux-3d` | 3D 渲染 | ⭐ 細節增強 |
-| | `flux-pro` | 專業版 | 💎 最高質量 |
-| | `any-dark` | 暗黑 | ⭐ 紋理增強 |
-| | `turbo` | 極速版 | ⚡ 速度優先 |
-| **Flux 高級** | `flux-1.1-pro` 🧪 | v1.1 Pro | 💎 最高質量 |
-| | `flux-kontext` 🧪 | Context | ⭐ 標準 |
-| | `flux-kontext-pro` 🧪 | Context Pro | 💎 專業級 |
-| **SD3 系列** | `sd3` 🧪 | SD3 標準 | ⭐ 質量增強 |
-| | `sd3.5-large` 🧪 | SD3.5 Large | 💎 旗艦畫質 |
+| **Flux 标准** | `flux` | 基础版 | 标准优化 |
+| | `flux-realism` | 超写实 | 💎 极致细节 |
+| | `flux-anime` | 动漫 | ⭐ 清晰度优先 |
+| | `flux-3d` | 3D 渲染 | ⭐ 细节增强 |
+| | `flux-pro` | 专业版 | 💎 最高质量 |
+| | `any-dark` | 暗黑 | ⭐ 纹理增强 |
+| | `turbo` | 极速版 | ⚡ 速度优先 |
+| **Flux 高级** | `flux-1.1-pro` 🧪 | v1.1 Pro | 💎 最高质量 |
+| | `flux-kontext` 🧪 | Context | ⭐ 标准 |
+| | `flux-kontext-pro` 🧪 | Context Pro | 💎 专业级 |
+| **SD3 系列** | `sd3` 🧪 | SD3 标准 | ⭐ 质量增强 |
+| | `sd3.5-large` 🧪 | SD3.5 Large | 💎 旗舰画质 |
 | | `sd3.5-turbo` 🧪 | SD3.5 Turbo | ⚡ 快速迭代 |
-| **SDXL** | `sdxl` 🧪 | SDXL 1.0 | ⭐ 質量增強 |
-| | `sdxl-lightning` 🧪 | Lightning | ⚡ 閃電生成 |
+| **SDXL** | `sdxl` 🧪 | SDXL 1.0 | ⭐ 质量增强 |
+| | `sdxl-lightning` 🧪 | Lightning | ⚡ 闪电生成 |
 
-> 🧪 = 實驗性模型 (可能自動回退到穩定模型)
+> 🧪 = 实验性模型 (可能自动回退到稳定模型)
 
 </details>
 
-### 12 種藝術風格
+### 12 种艺术风格
 
-| 風格 | 提示詞加成 | 負面提示詞 |
+| 风格 | 提示词加成 | 负面提示词 |
 |------|------------|------------|
 | 🎌 Japanese Manga | manga style, screentone | realistic, 3d render |
 | ✨ Anime | vibrant colors, anime art | realistic, photograph |
@@ -134,35 +134,35 @@
 
 ### 前置要求
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/) (v3.0+)
-- Cloudflare 賬號 (免費計劃即可)
+- Cloudflare 账号 (免费计划即可)
 
 ### 快速部署
 
 ```bash
-# 1. 克隆項目
+# 1. 克隆项目
 git clone https://github.com/kinai9661/Flux-AI-Pro.git
 cd Flux-AI-Pro
 
-# 2. 安裝 Wrangler
+# 2. 安装 Wrangler
 npm install -g wrangler
 wrangler login
 
 # 3. 部署
 wrangler deploy
 
-# 4. 訪問 Worker URL
+# 4. 访问 Worker URL
 # 例: https://flux-ai-pro.your-subdomain.workers.dev
 ```
 
-### 一鍵部署
+### 一键部署
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/kinai9661/Flux-AI-Pro)
 
 ---
 
-## 🔌 API 文檔
+## 🔌 API 文档
 
-### 1. 圖像生成 (Standard)
+### 1. 图像生成 (Standard)
 
 **Endpoint:** `POST /v1/images/generations`
 
@@ -176,8 +176,8 @@ wrangler deploy
   "height": 1536,
   "style": "photorealistic",
   "n": 1,
-  "auto_hd": true,              // v8.5.0: 自動高清
-  "auto_optimize": true,        // v8.5.0+: 智能優化
+  "auto_hd": true,              // 自动高清
+  "auto_optimize": true,        // 智能优化
   "negative_prompt": "blurry, low quality",
   "seed": 123456,
   "private": true
@@ -187,7 +187,7 @@ wrangler deploy
 #### Response
 ```json
 {
-  "created": 1733311200,
+  "created": 1733923200,
   "data": [
     {
       "url": "https://image.pollinations.ai/prompt/...",
@@ -196,20 +196,20 @@ wrangler deploy
       "width": 1536,
       "height": 1536,
       "seed": 123456,
-      "quality_mode": "ultra",             // 🆕 使用的質量模式
-      "prompt_complexity": 0.78,           // 🆕 提示詞複雜度 (0-1)
-      "hd_optimized": true,                // 是否 HD 優化
-      "hd_details": {                      // 🆕 HD 優化詳情
+      "quality_mode": "ultra",             // 🆕 使用的质量模式
+      "prompt_complexity": 0.78,           // 🆕 提示词复杂度 (0-1)
+      "hd_optimized": true,                // 是否 HD 优化
+      "hd_details": {                      // 🆕 HD 优化详情
         "hd_level": "maximum",
         "size_upscaled": true,
         "optimizations": [
-          "HD增強: maximum",
-          "尺寸優化: 1024x1024 → 1536x1536"
+          "HD增强: maximum",
+          "尺寸优化: 1024x1024 → 1536x1536"
         ]
       },
-      "auto_optimized": true,              // 是否智能優化
-      "steps": 48,                         // 🆕 最終步數 (含質量模式加成)
-      "guidance": 9.6,                     // 🆕 最終引導 (含質量模式加成)
+      "auto_optimized": true,              // 是否智能优化
+      "steps": 48,                         // 🆕 最终步数 (含质量模式加成)
+      "guidance": 9.6,                     // 🆕 最终引导 (含质量模式加成)
       "cost": "FREE"
     }
   ]
@@ -224,7 +224,7 @@ wrangler deploy
 {
   "model": "flux-pro",
   "messages": [
-    { "role": "user", "content": "畫一隻在太空的貓，極致細節" }
+    { "role": "user", "content": "画一只在太空的猫，极致细节" }
   ],
   "quality_mode": "ultra",  // 🆕
   "width": 1536,
@@ -234,14 +234,14 @@ wrangler deploy
 }
 ```
 
-### 3. 查詢接口
+### 3. 查询接口
 
 | Endpoint | 方法 | 描述 |
 |----------|------|------|
-| `/v1/models` | GET | 列出所有可用模型 + 質量配置 |
-| `/v1/providers` | GET | 查詢提供商信息 |
-| `/v1/styles` | GET | 列出所有風格預設 |
-| `/health` | GET | 健康檢查 + 版本信息 |
+| `/v1/models` | GET | 列出所有可用模型 + 质量配置 |
+| `/v1/providers` | GET | 查询提供商信息 |
+| `/v1/styles` | GET | 列出所有风格预设 |
+| `/health` | GET | 健康检查 + 版本信息 |
 
 ---
 
@@ -251,19 +251,19 @@ wrangler deploy
 ```toml
 name = "flux-ai-pro"
 main = "worker.js"
-compatibility_date = "2025-12-04"
+compatibility_date = "2025-12-10"
 
 [vars]
-PROJECT_VERSION = "8.6.0"
+PROJECT_VERSION = "8.6.1"
 ENABLE_QUALITY_MODES = "true"
 ```
 
 ### worker.js 核心配置
 ```javascript
 const CONFIG = {
-  PROJECT_VERSION: "8.6.0",
+  PROJECT_VERSION: "8.6.1",
   
-  // 🆕 三檔質量模式
+  // 🆕 三档质量模式
   HD_OPTIMIZATION: {
     QUALITY_MODES: {
       economy: {
@@ -284,14 +284,14 @@ const CONFIG = {
       }
     },
     
-    // 🆕 增強 HD 提示詞
+    // 🆕 增强 HD 提示词
     HD_PROMPTS: {
       basic: "high quality, detailed, sharp",
       enhanced: "high quality, 8k uhd, masterpiece, fine details",
       maximum: "ultra high quality, razor sharp focus, photographic precision"
     },
     
-    // 🆕 模型專屬配置
+    // 🆕 模型专属配置
     MODEL_QUALITY_PROFILES: {
       "flux-realism": {
         priority: "ultra_detail",
@@ -308,75 +308,80 @@ const CONFIG = {
 
 ---
 
-## 📅 更新日誌
+## 📅 更新日志
 
-### v8.6.0 (2025-12-04) - 🧠 智能自適應版
-- **新增**: 三檔質量模式 (經濟/標準/超高清)
-- **新增**: 智能提示詞複雜度分析器 (PromptAnalyzer)
-- **新增**: 模型專屬質量配置 (MODEL_QUALITY_PROFILES)
-- **新增**: 增強 HD 提示詞庫 (三級: basic/enhanced/maximum)
-- **新增**: 質量模式單選 UI (美觀卡片設計)
-- **優化**: HDOptimizer 支持質量模式參數
-- **優化**: ParameterOptimizer 多維度計算 (模式倍率 + 模型加成)
-- **保留**: v8.5.0 所有功能 (Auto HD、智能優化、17 模型、12 風格)
+### v8.6.1 (2025-12-10) - 🧹 清洁版
+- **移除**: 所有 NSFW 成人内容功能
+- **优化**: 清理与 NSFW 相关的所有代码
+- **保留**: v8.6.0 所有核心功能（三档质量、智能分析等）
+- **更新**: Web UI 界面优化
 
-### v8.5.0 (2025-11-29) - 💎 自動高清版
-- **新增**: Auto HD (自動高清) 功能
-- **新增**: HDOptimizer 類
-- **優化**: Web UI 高清開關
+### v8.6.0 (2025-12-04) - 🧠 智能自适应版
+- **新增**: 三档质量模式 (经济/标准/超高清)
+- **新增**: 智能提示词复杂度分析器 (PromptAnalyzer)
+- **新增**: 模型专属质量配置 (MODEL_QUALITY_PROFILES)
+- **新增**: 增强 HD 提示词库 (三级: basic/enhanced/maximum)
+- **新增**: 质量模式单选 UI (美观卡片设计)
+- **优化**: HDOptimizer 支持质量模式参数
+- **优化**: ParameterOptimizer 多维度计算 (模式倍率 + 模型加成)
 
-### v8.4.0 - 🎬 動態 UI
-- **新增**: 實時進度條模擬
-- **新增**: 狀態消息反饋
+### v8.5.0 (2025-11-29) - 💎 自动高清版
+- **新增**: Auto HD (自动高清) 功能
+- **新增**: HDOptimizer 类
+- **优化**: Web UI 高清开关
 
-### v8.3.0 - 🧠 智能優化
-- **新增**: 自動計算 Steps/Guidance
+### v8.4.0 - 🎬 动态 UI
+- **新增**: 实时进度条模拟
+- **新增**: 状态消息反馈
 
-### v8.0.0 - 🦄 架構重構
-- **重構**: 多提供商架構
-- **新增**: 歷史記錄系統
+### v8.3.0 - 🧠 智能优化
+- **新增**: 自动计算 Steps/Guidance
 
----
-
-## 🌐 演示與部署
-
-- **最新演示站**: [https://koy.xx.kg/](https://koy.xx.kg/) *(即將更新至 v8.6.0)*
-- **GitHub 倉庫**: [kinai9661/Flux-AI-Pro](https://github.com/kinai9661/Flux-AI-Pro)
-- **部署平台**: Cloudflare Workers (免費計劃支持)
+### v8.0.0 - 🦄 架构重构
+- **重构**: 多提供商架构
+- **新增**: 历史记录系统
 
 ---
 
-## 💡 使用建議
+## 🌐 演示与部署
 
-### 質量模式選擇指南
+- **最新演示站**: [https://koy.xx.kg/](https://koy.xx.kg/)
+- **GitHub 仓库**: [kinai9661/Flux-AI-Pro](https://github.com/kinai9661/Flux-AI-Pro)
+- **部署平台**: Cloudflare Workers (免费计划支持)
 
-| 場景 | 推薦模式 | 理由 |
+---
+
+## 💡 使用建议
+
+### 质量模式选择指南
+
+| 场景 | 推荐模式 | 理由 |
 |------|----------|------|
-| 快速測試概念 | ⚡ 經濟 | 速度優先，節省資源 |
-| 日常社交媒體 | ⭐ 標準 | 平衡質量與速度 |
-| 專業作品集 | 💎 超高清 | 極致細節，適合印刷 |
-| 客戶交付 | 💎 超高清 | 最高標準，零妥協 |
-| 動畫幀生成 | ⚡ 經濟 | 批量生成，一致性優先 |
-| 產品渲染圖 | 💎 超高清 | 商業用途，細節重要 |
+| 快速测试概念 | ⚡ 经济 | 速度优先，节省资源 |
+| 日常社交媒体 | ⭐ 标准 | 平衡质量与速度 |
+| 专业作品集 | 💎 超高清 | 极致细节，适合印刷 |
+| 客户交付 | 💎 超高清 | 最高标准，零妃协 |
+| 动画帧生成 | ⚡ 经济 | 批量生成，一致性优先 |
+| 产品渲染图 | 💎 超高清 | 商业用途，细节重要 |
 
-### 模型 + 模式組合推薦
+### 模型 + 模式组合推荐
 
 ```
-頂級質量:
-flux-realism + 超高清 + photorealistic 風格
-→ 適合: 商業攝影、產品展示、人像特寫
+顶级质量:
+flux-realism + 超高清 + photorealistic 风格
+→ 适合: 商业摄影、产品展示、人像特写
 
-動漫高清:
-flux-anime + 標準/超高清 + anime 風格
-→ 適合: 遊戲角色、漫畫封面、插畫
+动漫高清:
+flux-anime + 标准/超高清 + anime 风格
+→ 适合: 游戏角色、漫画封面、插画
 
 快速迭代:
-turbo + 經濟 + 任意風格
-→ 適合: 概念草圖、頭腦風暴、A/B 測試
+turbo + 经济 + 任意风格
+→ 适合: 概念草图、头脑风暴、A/B 测试
 
-藝術創作:
+艺术创作:
 flux-pro + 超高清 + oil-painting/watercolor
-→ 適合: 數字藝術品、NFT、畫廊展示
+→ 适合: 数字艺术品、NFT、画庻展示
 ```
 
 ---
@@ -384,50 +389,49 @@ flux-pro + 超高清 + oil-painting/watercolor
 ## ⚠️ 重要提醒
 
 ### Pollinations.ai
-1. **完全免費**，但服務穩定性由第三方控制
-2. 請遵守其 [使用條款](https://pollinations.ai/terms)
-3. 部分實驗性模型可能不可用 (自動回退)
+1. **完全免费**，但服务稳定性由第三方控制
+2. 请遵守其 [使用条款](https://pollinations.ai/terms)
+3. 部分实验性模型可能不可用 (自动回退)
 
-### 質量模式與性能
-1. **超高清模式**會增加生成時間 (約 +35%)
-2. **自動優化**會根據複雜度推薦最佳模式
-3. 建議首次測試使用**標準模式**找到平衡點
+### 质量模式与性能
+1. **超高清模式**会增加生成时间 (约 +35%)
+2. **自动优化**会根据复杂度推荐最佳模式
+3. 建议首次测试使用**标准模式**找到平衡点
 
-### 法律與責任
-- 請勿生成非法、仇恨或違反當地法律的內容
-- NSFW 功能僅供合法成年人使用
-- 用戶需自行承擔生成內容帶來的責任
+### 法律与责任
+- 请勿生成非法、仇恨或违反当地法律的内容
+- 用户需自行承担生成内容带来的责任
 
 ---
 
-## 🤝 貢獻
+## 🤝 贡献
 
-歡迎提交 Issue 或 Pull Request!
+欢迎提交 Issue 或 Pull Request!
 
-### 開發指南
+### 开发指南
 ```bash
-# 本地開發
+# 本地开发
 wrangler dev
 
-# 部署測試
+# 部署测试
 wrangler deploy --env dev
 
-# 生產部署
+# 生产部署
 wrangler deploy
 ```
 
 ---
 
-## 📄 許可證
+## 📄 许可证
 
 MIT License - 查看 [LICENSE](LICENSE) 文件
 
 ---
 
-## 🙏 致謝
+## 🙏 致谢
 
-- [Pollinations.ai](https://pollinations.ai/) - 免費 AI 圖像生成服務
-- [Cloudflare Workers](https://workers.cloudflare.com/) - 全球邊緣計算平台
+- [Pollinations.ai](https://pollinations.ai/) - 免费 AI 图像生成服务
+- [Cloudflare Workers](https://workers.cloudflare.com/) - 全球边缘计算平台
 - [Black Forest Labs](https://blackforestlabs.ai/) - FLUX 系列模型
 - [Stability AI](https://stability.ai/) - Stable Diffusion 系列
 
