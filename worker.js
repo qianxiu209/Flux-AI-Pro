@@ -1,6 +1,6 @@
 // =================================================================================
-//  项目: multi-provider-image-generator
-//  版本: 8.7.0 (添加图片历史记录功能)
+//  項目: multi-provider-image-generator
+//  版本: 8.7.0 (添加圖片歷史紀錄功能)
 //  作者: Enhanced by AI Assistant
 //  日期: 2025-12-11
 // =================================================================================
@@ -616,7 +616,7 @@ function handleStylesRequest() {
 
 function handleUI() {
   const html = `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -670,17 +670,17 @@ button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97
 <p class="subtitle">17個模型 · 12種風格 · 3檔質量 · 智能HD優化 · 完全免費</p>
 </div>
 <button onclick="toggleHistory()" class="history-btn">
-📜 历史记录
+📜 歷史紀錄
 <span id="historyBadge" class="history-badge" style="display:none">0</span>
 </button>
 </div>
 
 <div id="historyPanel" class="history-panel">
 <div class="history-header">
-<h2>📸 图片历史</h2>
+<h2>📸 圖片歷史</h2>
 <div class="history-actions">
 <button onclick="clearAllHistory()" class="btn-clear">🗑️ 清空</button>
-<button onclick="toggleHistory()" class="btn-close">✕ 关闭</button>
+<button onclick="toggleHistory()" class="btn-close">✕ 關閉</button>
 </div>
 </div>
 <div id="historyList" class="history-list"></div>
@@ -785,7 +785,7 @@ localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
 this.updateBadge();
 return true;
 }catch(e){
-console.error('保存失败:',e);
+console.error('儲存失敗:',e);
 return false;
 }
 }
@@ -794,7 +794,7 @@ try{
 const data=localStorage.getItem(STORAGE_KEY);
 return data?JSON.parse(data):[];
 }catch(e){
-console.error('读取失败:',e);
+console.error('讀取失敗:',e);
 return[];
 }
 }
@@ -806,7 +806,7 @@ localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
 this.updateBadge();
 return true;
 }catch(e){
-console.error('删除失败:',e);
+console.error('刪除失敗:',e);
 return false;
 }
 }
@@ -816,7 +816,7 @@ localStorage.removeItem(STORAGE_KEY);
 this.updateBadge();
 return true;
 }catch(e){
-console.error('清空失败:',e);
+console.error('清空失敗:',e);
 return false;
 }
 }
@@ -841,7 +841,7 @@ document.getElementById('seed').value=record.seed||-1;
 const qualityRadio=document.querySelector(\`input[name="quality"][value="\${record.qualityMode||'standard'}"]\`);
 if(qualityRadio)qualityRadio.checked=true;
 toggleHistory();
-alert('✅ 参数已加载!');
+alert('✅ 參數已載入!');
 }
 }
 
@@ -859,12 +859,12 @@ function showHistory(){
 const history=HistoryManager.getAll();
 const container=document.getElementById('historyList');
 if(history.length===0){
-container.innerHTML='<div style="text-align:center;padding:40px;color:#9ca3af">📭 暂无历史记录</div>';
+container.innerHTML='<div style="text-align:center;padding:40px;color:#9ca3af">📭 暫無歷史紀錄</div>';
 return;
 }
 container.innerHTML=history.map(item=>\`
 <div class="history-item">
-<img src="\${item.url}" alt="历史图片" onclick="window.open('\${item.url}')">
+<img src="\${item.url}" alt="歷史圖片" onclick="window.open('\${item.url}')">
 <div class="history-info">
 <div class="history-prompt">\${(item.prompt||'').substring(0,60)}\${(item.prompt||'').length>60?'...':''}</div>
 <div class="history-meta">
@@ -874,8 +874,8 @@ container.innerHTML=history.map(item=>\`
 </div>
 <div class="history-time">\${formatTime(item.timestamp)}</div>
 <div class="history-actions-item">
-<button onclick='HistoryManager.loadParams(\${JSON.stringify(item).replace(/'/g,"\\\\'")})'class="btn-load">🔄 加载</button>
-<button onclick="deleteHistoryItem(\${item.id})"class="btn-delete">🗑️ 删除</button>
+<button onclick='HistoryManager.loadParams(\${JSON.stringify(item).replace(/'/g,"\\\\'")})'class="btn-load">🔄 載入</button>
+<button onclick="deleteHistoryItem(\${item.id})"class="btn-delete">🗑️ 刪除</button>
 </div>
 </div>
 </div>
@@ -883,14 +883,14 @@ container.innerHTML=history.map(item=>\`
 }
 
 function deleteHistoryItem(id){
-if(confirm('确定删除这条记录吗？')){
+if(confirm('確定刪除這條紀錄嗎？')){
 HistoryManager.delete(id);
 showHistory();
 }
 }
 
 function clearAllHistory(){
-if(confirm('确定清空所有历史记录吗？此操作不可恢复！')){
+if(confirm('確定清空所有歷史紀錄嗎？此操作不可復原！')){
 HistoryManager.clear();
 showHistory();
 }
@@ -900,11 +900,11 @@ function formatTime(timestamp){
 const date=new Date(timestamp);
 const now=new Date();
 const diff=now-date;
-if(diff<60000)return'刚刚';
-if(diff<3600000)return\`\${Math.floor(diff/60000)}分钟前\`;
-if(diff<86400000)return\`\${Math.floor(diff/3600000)}小时前\`;
+if(diff<60000)return'剛剛';
+if(diff<3600000)return\`\${Math.floor(diff/60000)}分鐘前\`;
+if(diff<86400000)return\`\${Math.floor(diff/3600000)}小時前\`;
 if(diff<604800000)return\`\${Math.floor(diff/86400000)}天前\`;
-return date.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'});
+return date.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
 }
 
 const widthSlider=document.getElementById('width');
