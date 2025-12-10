@@ -1,13 +1,13 @@
 // =================================================================================
 //  項目: multi-provider-image-generator
-//  版本: 8.8.0 (添加 Nano Banana 模型支持)
+//  版本: 8.8.1 (移除主界面中文提示相关文字)
 //  作者: Enhanced by AI Assistant
 //  日期: 2025-12-11
 // =================================================================================
 
 const CONFIG = {
   PROJECT_NAME: "multi-provider-image-generator",
-  PROJECT_VERSION: "8.8.0",
+  PROJECT_VERSION: "8.8.1",
   API_MASTER_KEY: "1",
   
   PROVIDERS: {
@@ -681,7 +681,6 @@ function handleUI() {
 h1{color:#f59e0b;margin:0;font-size:36px;font-weight:800;text-shadow:0 0 30px rgba(245,158,11,0.6)}
 .badge{background:linear-gradient(135deg,#10b981 0%,#059669 100%);padding:6px 14px;border-radius:20px;font-size:14px;margin-left:10px}
 .subtitle{color:#9ca3af;margin-top:8px;font-size:15px}
-.chinese-support{display:inline-block;background:rgba(139,92,246,0.2);border:1px solid #8b5cf6;color:#a78bfa;padding:4px 10px;border-radius:6px;font-size:13px;margin-top:6px;font-weight:600}
 .history-btn{background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.3s;position:relative}
 .history-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.4)}
 .history-badge{position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
@@ -729,8 +728,7 @@ button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97
 <div class="header">
 <div class="header-left">
 <h1>🎨 Flux AI Pro<span class="badge">v${CONFIG.PROJECT_VERSION}</span></h1>
-<p class="subtitle">19個模型 · 12種風格 · 3檔質量 · 智能HD優化 · 自動中譯英 · Nano Banana支持</p>
-<span class="chinese-support">✨ 完美支持中文提示詞（自動翻譯） · 🍌 新增 Nano Banana 模型</span>
+<p class="subtitle">19個模型 · 12種風格 · 3檔質量 · 智能HD優化 · 🍌 Nano Banana</p>
 </div>
 <button onclick="toggleHistory()" class="history-btn">
 📜 歷史紀錄
@@ -752,15 +750,15 @@ button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97
 <div class="grid">
 <div class="box">
 <h3>📝 生成設置</h3>
-<label>提示詞 * (完美支持中文)</label>
+<label>提示詞 *</label>
 <div class="prompt-actions">
 <button type="button" onclick="fillExample('zh')" class="btn-example">中文示例</button>
 <button type="button" onclick="fillExample('en')" class="btn-example">英文示例</button>
 <button type="button" onclick="fillExample('mix')" class="btn-example">混合示例</button>
 </div>
-<textarea id="prompt" placeholder="中文：一個穿著漢服的女孩在櫻花樹下&#10;English: A girl in traditional Chinese dress under cherry blossoms&#10;混合: 賽博朋克風格的龍 cyberpunk style dragon&#10;&#10;💡 系統會自動將中文翻譯成英文以提高生成質量"></textarea>
+<textarea id="prompt" placeholder="Describe your image...&#10;A beautiful sunset over mountains with vibrant colors"></textarea>
 <label>負面提示詞</label>
-<textarea id="negativePrompt" placeholder="低質量、模糊、變形 low quality, blurry, distorted"></textarea>
+<textarea id="negativePrompt" placeholder="low quality, blurry, distorted"></textarea>
 <label>AI 模型</label>
 <select id="model">
 <optgroup label="⚡ Flux 系列">
@@ -1028,7 +1026,7 @@ button.disabled=true;
 button.textContent='生成中...';
 
 startTime=Date.now();
-resultDiv.innerHTML='<div class="success"><strong>⏳ 正在生成圖像，請稍候...</strong><div class="timer">⏱️ 已耗時: 0.0 秒</div><div style="margin-top:8px;font-size:12px;opacity:0.8">💡 系統正在自動翻譯中文提示詞...</div></div>';
+resultDiv.innerHTML='<div class="success"><strong>⏳ 正在生成圖像，請稍候...</strong><div class="timer">⏱️ 已耗時: 0.0 秒</div></div>';
 
 generationTimer=setInterval(updateTimer,100);
 
