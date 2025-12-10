@@ -1,5 +1,5 @@
 name = "flux-ai-pro"
-compatibility_date = "2025-12-11"
+compatibility_date = "2025-12-10"
 main = "worker.js"
 
 # Cloudflare Workers 配置
@@ -7,7 +7,7 @@ main = "worker.js"
 
 [vars]
 # 項目版本號（可選）
-PROJECT_VERSION = "8.7.0"
+PROJECT_VERSION = "8.7.1"
 
 # API 配置（如需要可取消註釋）
 # API_MASTER_KEY = "your-secret-key"
