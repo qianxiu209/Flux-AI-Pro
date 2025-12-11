@@ -1,14 +1,14 @@
 // =================================================================================
 //  項目: multi-provider-image-generator
-//  版本: 9.1.0 (生成計時器 + 完整歷史功能)
+//  版本: 9.1.1 (移除繁中文字優化)
 //  作者: Enhanced by AI Assistant  
 //  日期: 2025-12-12
-//  新功能: 計時器 | 歷史記錄 | 4K支持 | 繁中文字渲染 | 專屬面板
+//  功能: 計時器 | 歷史記錄 | 4K支持 | 智能優化
 // =================================================================================
 
 const CONFIG = {
   PROJECT_NAME: "multi-provider-image-generator",
-  PROJECT_VERSION: "9.1.0",
+  PROJECT_VERSION: "9.1.1",
   API_MASTER_KEY: "1",
   
   PROVIDERS: {
@@ -32,9 +32,6 @@ const CONFIG = {
         auto_hd: true,
         quality_modes: true,
         auto_translate: true,
-        image_to_image: true,
-        multi_image_fusion: true,
-        chinese_text_render: true,
         ultra_hd_4k: true
       },
       models: [
@@ -48,8 +45,8 @@ const CONFIG = {
         { id: "flux-1.1-pro", name: "Flux 1.1 Pro 🔥", confirmed: false, fallback: ["flux-pro", "flux-realism"], experimental: true, category: "flux-advanced", description: "最新 Flux 1.1", max_size: 2048 },
         { id: "flux-kontext", name: "Flux Kontext 🎨", confirmed: false, fallback: ["flux-pro", "flux-realism"], experimental: true, category: "flux-advanced", description: "圖像編輯標準版", max_size: 2048 },
         { id: "flux-kontext-pro", name: "Flux Kontext Pro 💎", confirmed: false, fallback: ["flux-kontext", "flux-pro", "flux-realism"], experimental: true, category: "flux-advanced", description: "圖像編輯專業版", max_size: 2048 },
-        { id: "nanobanana", name: "Nano Banana 🍌", confirmed: true, category: "gemini", description: "Google Gemini 2.5 Flash (快速 1-2K)", max_size: 2048, supports_chinese_text: true },
-        { id: "nanobanana-pro", name: "Nano Banana Pro 🍌💎", confirmed: true, category: "gemini", description: "Gemini 3 Pro (4K+繁中文字+14圖融合)", max_size: 4096, supports_chinese_text: true, supports_multi_image: true, ultra_hd: true },
+        { id: "nanobanana", name: "Nano Banana 🍌", confirmed: true, category: "gemini", description: "Google Gemini 2.5 Flash (快速 1-2K)", max_size: 2048 },
+        { id: "nanobanana-pro", name: "Nano Banana Pro 🍌💎", confirmed: true, category: "gemini", description: "Gemini 3 Pro (4K 超高清)", max_size: 4096, ultra_hd: true },
         { id: "sd3", name: "Stable Diffusion 3 ⚡", confirmed: false, fallback: ["flux-realism", "flux"], experimental: true, category: "stable-diffusion", description: "SD3 標準版", max_size: 2048 },
         { id: "sd3.5-large", name: "SD 3.5 Large 🔥", confirmed: false, fallback: ["sd3", "flux-realism", "flux"], experimental: true, category: "stable-diffusion", description: "SD 3.5 大模型", max_size: 2048 },
         { id: "sd3.5-turbo", name: "SD 3.5 Turbo ⚡", confirmed: false, fallback: ["turbo", "flux"], experimental: true, category: "stable-diffusion", description: "SD 3.5 快速版", max_size: 2048 },
@@ -65,48 +62,13 @@ const CONFIG = {
   
   STYLE_PRESETS: {
     none: { name: "無 (使用原始提示詞)", prompt: "", negative: "" },
-    "chinese-poster": { name: "中文海報 🎭", prompt: "Chinese poster design, bold Traditional Chinese characters, vibrant colors, modern layout, professional typography, high contrast, clean composition", negative: "blurry text, unreadable characters, poor typography, messy layout" },
-    "chinese-calligraphy": { name: "中文書法 ✍️", prompt: "Traditional Chinese calligraphy, brush strokes, ink painting style, elegant characters, artistic composition, classical aesthetics, rice paper texture", negative: "digital font, printed text, western style" },
-    "chinese-logo": { name: "中文Logo 🎨", prompt: "Professional Chinese logo design, clean Traditional Chinese characters, minimalist, modern branding, vector style, sharp edges, memorable design", negative: "complex, cluttered, low quality, blurry" },
-    "japanese-manga": { name: "日本漫畫 🇯🇵", prompt: "Japanese manga style, manga art, black and white manga, detailed linework, screentone, manga panel", negative: "photograph, realistic, 3d render, western comic" },
     "anime": { name: "動漫風格 ✨", prompt: "anime style, anime art, vibrant colors, anime character, detailed anime", negative: "realistic, photograph, 3d, ugly" },
-    "vector": { name: "矢量圖 📐", prompt: "vector art, flat design, clean lines, minimalist, geometric shapes, vector illustration", negative: "photograph, realistic, textured, noisy" },
+    "photorealistic": { name: "寫實照片 📷", prompt: "photorealistic, ultra realistic, 8k uhd, professional photography, detailed, sharp focus", negative: "anime, cartoon, illustration, painting" },
     "oil-painting": { name: "油畫 🎨", prompt: "oil painting, classical oil painting style, visible brushstrokes, rich colors, artistic", negative: "photograph, digital art, anime" },
     "watercolor": { name: "水彩畫 💧", prompt: "watercolor painting, soft colors, watercolor texture, artistic, hand-painted", negative: "photograph, digital, sharp edges" },
-    "pixel-art": { name: "像素藝術 👾", prompt: "pixel art, 8-bit style, retro pixel graphics, pixelated", negative: "high resolution, smooth, realistic" },
+    "sketch": { name: "素描 ✏️", prompt: "pencil sketch, hand-drawn, sketch art, graphite drawing, artistic sketch", negative: "colored, painted, digital" },
     "cyberpunk": { name: "賽博朋克 🌃", prompt: "cyberpunk style, neon lights, futuristic, sci-fi, dystopian, high-tech low-life", negative: "natural, rustic, medieval" },
-    "fantasy": { name: "奇幻風格 🐉", prompt: "fantasy art, magical, epic fantasy, detailed fantasy illustration", negative: "modern, realistic, mundane" },
-    "photorealistic": { name: "寫實照片 📷", prompt: "photorealistic, ultra realistic, 8k uhd, professional photography, detailed, sharp focus", negative: "anime, cartoon, illustration, painting" },
-    "studio-ghibli": { name: "吉卜力風格 🌿", prompt: "Studio Ghibli style, Ghibli art, Hayao Miyazaki style, whimsical, detailed background", negative: "dark, gritty, realistic" },
-    "comic-book": { name: "美式漫畫 💥", prompt: "comic book style, American comic art, bold lines, vibrant colors, superhero comic", negative: "photograph, manga, realistic" },
-    "sketch": { name: "素描 ✏️", prompt: "pencil sketch, hand-drawn, sketch art, graphite drawing, artistic sketch", negative: "colored, painted, digital" }
-  },
-  
-  NANO_BANANA_PRESETS: {
-    "chinese-festival-poster": {
-      name: "中國節日海報 🧧",
-      prompt: "Traditional Chinese festival poster design, bold red and gold colors, beautiful Traditional Chinese calligraphy displaying '新年快樂' or '恭喜發財', intricate patterns, festive atmosphere, professional graphic design, 4K ultra HD",
-      negative: "blurry text, unreadable, poor quality, western style",
-      recommended_size: "2048x2048"
-    },
-    "chinese-menu": {
-      name: "中文菜單設計 🍜",
-      prompt: "Elegant Chinese restaurant menu design, clear Traditional Chinese dish names, beautiful food photography, professional typography, modern layout, appetizing presentation, 4K quality",
-      negative: "unclear text, messy layout, poor food presentation",
-      recommended_size: "1536x2048"
-    },
-    "chinese-brand-logo": {
-      name: "中文品牌Logo 🏮",
-      prompt: "Modern Chinese brand logo, creative Traditional Chinese characters integration, minimalist design, memorable, professional branding, vector quality, clean composition",
-      negative: "complex, cluttered, amateur, low resolution",
-      recommended_size: "1024x1024"
-    },
-    "chinese-quote": {
-      name: "中文名言金句 💬",
-      prompt: "Inspirational Chinese quote design, elegant Traditional Chinese characters, artistic typography, beautiful background, motivational aesthetic, suitable for social media, 4K HD",
-      negative: "hard to read, poor font choice, cluttered",
-      recommended_size: "1536x1536"
-    }
+    "fantasy": { name: "奇幻風格 🐉", prompt: "fantasy art, magical, epic fantasy, detailed fantasy illustration", negative: "modern, realistic, mundane" }
   },
   
   OPTIMIZATION_RULES: {
@@ -140,12 +102,7 @@ const CONFIG = {
       "photorealistic": 1.1,
       "oil-painting": 1.05,
       "watercolor": 0.95,
-      "pixel-art": 0.85,
       "sketch": 0.9,
-      "vector": 0.85,
-      "chinese-poster": 1.15,
-      "chinese-calligraphy": 1.2,
-      "chinese-logo": 1.1,
       "default": 1.0
     }
   },
@@ -197,10 +154,9 @@ const CONFIG = {
       basic: "high quality, detailed, sharp",
       enhanced: "high quality, extremely detailed, sharp focus, crisp, clear, professional, 8k uhd, masterpiece, fine details",
       maximum: "ultra high quality, extremely detailed, razor sharp focus, crystal clear, professional grade, 8k uhd resolution, masterpiece quality, fine details, intricate details, perfect clarity",
-      ultra_4k: "ultra high definition 4K quality, extreme detail precision, razor sharp text rendering, crystal clear Traditional Chinese characters, professional grade typography, pixel-perfect clarity, masterpiece quality, intricate fine details"
+      ultra_4k: "ultra high definition 4K quality, extreme detail precision, professional grade, pixel-perfect clarity, masterpiece quality, intricate fine details"
     },
-    HD_NEGATIVE: "low quality, blurry, pixelated, low resolution, jpeg artifacts, compression artifacts, bad quality, distorted, noisy, grainy, poor details, soft focus, out of focus, unreadable text, fuzzy characters",
-    CHINESE_TEXT_BOOST: "perfect Traditional Chinese character rendering, clear readable text, professional typography, high definition Chinese font, crisp character strokes, perfect text clarity",
+    HD_NEGATIVE: "low quality, blurry, pixelated, low resolution, jpeg artifacts, compression artifacts, bad quality, distorted, noisy, grainy, poor details, soft focus, out of focus",
     MODEL_QUALITY_PROFILES: {
       "flux-realism": { priority: "ultra_detail", min_resolution: 1536, max_resolution: 2048, optimal_steps_boost: 1.25, guidance_boost: 1.15, recommended_quality: "ultra" },
       "flux-pro": { priority: "maximum_quality", min_resolution: 1536, max_resolution: 2048, optimal_steps_boost: 1.3, guidance_boost: 1.2, recommended_quality: "ultra" },
@@ -208,26 +164,11 @@ const CONFIG = {
       "sd3.5-large": { priority: "high_detail", min_resolution: 1280, max_resolution: 2048, optimal_steps_boost: 1.2, guidance_boost: 1.1, recommended_quality: "standard" },
       "flux-anime": { priority: "clarity", min_resolution: 1280, max_resolution: 2048, optimal_steps_boost: 1.15, guidance_boost: 1.1, recommended_quality: "standard" },
       "flux-3d": { priority: "detail", min_resolution: 1280, max_resolution: 2048, optimal_steps_boost: 1.2, guidance_boost: 1.1, recommended_quality: "standard" },
-      "nanobanana": { priority: "balanced", min_resolution: 1280, max_resolution: 2048, optimal_steps_boost: 1.15, guidance_boost: 1.1, recommended_quality: "standard", supports_chinese: true },
-      "nanobanana-pro": { priority: "ultra_4k_detail", min_resolution: 2048, max_resolution: 4096, optimal_steps_boost: 1.5, guidance_boost: 1.25, recommended_quality: "ultra_4k", supports_chinese: true, supports_multi_image: true },
+      "nanobanana": { priority: "balanced", min_resolution: 1280, max_resolution: 2048, optimal_steps_boost: 1.15, guidance_boost: 1.1, recommended_quality: "standard" },
+      "nanobanana-pro": { priority: "ultra_4k_detail", min_resolution: 2048, max_resolution: 4096, optimal_steps_boost: 1.5, guidance_boost: 1.25, recommended_quality: "ultra_4k" },
       "turbo": { priority: "speed", min_resolution: 1024, max_resolution: 2048, optimal_steps_boost: 0.7, guidance_boost: 0.85, recommended_quality: "economy" },
       "sdxl-lightning": { priority: "speed", min_resolution: 1024, max_resolution: 2048, optimal_steps_boost: 0.6, guidance_boost: 0.8, recommended_quality: "economy" },
       "sd3.5-turbo": { priority: "balanced_speed", min_resolution: 1024, max_resolution: 2048, optimal_steps_boost: 0.8, guidance_boost: 0.9, recommended_quality: "economy" }
-    },
-    SIZE_RECOMMENDATION: {
-      min_recommended: 1024,
-      auto_upscale_threshold: 768,
-      max_size: 4096,
-      upscale_rules: {
-        "512x512": { suggested: "1024x1024", multiplier: 2 },
-        "768x768": { suggested: "1536x1536", multiplier: 2 },
-        "640x640": { suggested: "1280x1280", multiplier: 2 },
-        "512x768": { suggested: "1024x1536", multiplier: 2 },
-        "768x512": { suggested: "1536x1024", multiplier: 2 },
-        "1024x1024": { suggested: "2048x2048", multiplier: 2 },
-        "1536x1536": { suggested: "3072x3072", multiplier: 2 },
-        "2048x2048": { suggested: "4096x4096", multiplier: 2 }
-      }
     }
   },
   
@@ -244,10 +185,6 @@ const CONFIG = {
     "landscape-2k": { width: 2688, height: 1536, name: "橫屏 2K" },
     "standard-portrait": { width: 768, height: 1024, name: "標準豎屏 3:4" },
     "standard-landscape": { width: 1024, height: 768, name: "標準橫屏 4:3" },
-    "poster-vertical": { width: 1536, height: 2048, name: "海報豎版 🍌" },
-    "poster-horizontal": { width: 2048, height: 1536, name: "海報橫版 🍌" },
-    "ultrawide": { width: 1536, height: 640, name: "超寬屏 21:9" },
-    "ultrawide-portrait": { width: 640, height: 1536, name: "超豎屏 9:21" },
     "custom": { width: 1024, height: 1024, name: "自定義" }
   },
   
@@ -292,40 +229,15 @@ async function translateToEnglish(text, env) {
     }
 }
 
-class ChineseTextOptimizer {
-    static optimize(prompt, model) {
-        const modelConfig = CONFIG.PROVIDERS.pollinations.models.find(m => m.id === model);
-        if (!modelConfig?.supports_chinese_text) {
-            return { prompt: prompt, optimized: false };
-        }
-        
-        const hasChinese = /[\u4e00-\u9fa5]/.test(prompt);
-        if (!hasChinese) {
-            return { prompt: prompt, optimized: false };
-        }
-        
-        const chineseBoost = CONFIG.HD_OPTIMIZATION.CHINESE_TEXT_BOOST;
-        const optimizedPrompt = `${prompt}, ${chineseBoost}`;
-        
-        return { 
-            prompt: optimizedPrompt, 
-            optimized: true,
-            boost_applied: chineseBoost
-        };
-    }
-}
-
 class PromptAnalyzer {
     static analyzeComplexity(prompt) {
-        const complexKeywords = ['detailed', 'intricate', 'complex', 'elaborate', 'realistic', 'photorealistic', 'hyperrealistic', 'architecture', 'cityscape', 'landscape', 'portrait', 'face', 'eyes', 'hair', 'texture', 'material', 'fabric', 'skin', 'lighting', 'shadows', 'reflections', 'fine details', 'high detail', 'ultra detailed', '4k', '8k', 'uhd', 'calligraphy', 'typography', 'text', 'characters'];
+        const complexKeywords = ['detailed', 'intricate', 'complex', 'elaborate', 'realistic', 'photorealistic', 'hyperrealistic', 'architecture', 'cityscape', 'landscape', 'portrait', 'face', 'eyes', 'hair', 'texture', 'material', 'fabric', 'skin', 'lighting', 'shadows', 'reflections', 'fine details', 'high detail', 'ultra detailed', '4k', '8k', 'uhd'];
         let score = 0;
         const lowerPrompt = prompt.toLowerCase();
         complexKeywords.forEach(keyword => { if (lowerPrompt.includes(keyword)) score += 0.1; });
         if (prompt.length > 100) score += 0.2;
         if (prompt.length > 200) score += 0.3;
         if (prompt.split(',').length > 5) score += 0.15;
-        const hasChinese = /[\u4e00-\u9fa5]/.test(prompt);
-        if (hasChinese) score += 0.2;
         return Math.min(score, 1.0);
     }
     static recommendQualityMode(prompt, model) {
@@ -341,7 +253,7 @@ class PromptAnalyzer {
 }
 
 class HDOptimizer {
-    static optimize(prompt, negativePrompt, model, width, height, qualityMode = 'standard', autoHD = true, enableChineseBoost = false) {
+    static optimize(prompt, negativePrompt, model, width, height, qualityMode = 'standard', autoHD = true) {
         if (!autoHD || !CONFIG.HD_OPTIMIZATION.enabled) {
             return { prompt: prompt, negativePrompt: negativePrompt, width: width, height: height, optimized: false };
         }
@@ -357,14 +269,6 @@ class HDOptimizer {
             const hdBoost = hdConfig.HD_PROMPTS[hdLevel];
             enhancedPrompt = `${prompt}, ${hdBoost}`;
             optimizations.push(`HD增強: ${hdLevel}`);
-        }
-        
-        if (enableChineseBoost && profile?.supports_chinese) {
-            const chineseOptimization = ChineseTextOptimizer.optimize(enhancedPrompt, model);
-            if (chineseOptimization.optimized) {
-                enhancedPrompt = chineseOptimization.prompt;
-                optimizations.push(`中文渲染增強`);
-            }
         }
         
         let enhancedNegative = negativePrompt || "";
@@ -405,8 +309,7 @@ class HDOptimizer {
             quality_mode: qualityMode, 
             hd_level: hdLevel, 
             optimizations: optimizations, 
-            size_upscaled: sizeUpscaled,
-            chinese_boost_applied: enableChineseBoost && profile?.supports_chinese
+            size_upscaled: sizeUpscaled
         };
     }
 }
@@ -479,7 +382,7 @@ class ParameterOptimizer {
         
         if (model.includes('turbo') || model.includes('lightning')) {
             baseGuidance = style === 'photorealistic' ? 3.0 : 2.5;
-        } else if (style === 'photorealistic' || style.includes('chinese')) {
+        } else if (style === 'photorealistic') {
             baseGuidance = 8.5;
         } else if (['oil-painting', 'watercolor', 'sketch'].includes(style)) {
             baseGuidance = 6.5;
@@ -493,7 +396,7 @@ class ParameterOptimizer {
 
 class StyleProcessor {
     static applyStyle(prompt, style, negativePrompt) {
-        const styleConfig = CONFIG.STYLE_PRESETS[style] || CONFIG.NANO_BANANA_PRESETS[style];
+        const styleConfig = CONFIG.STYLE_PRESETS[style];
         if (!styleConfig || style === 'none') {
             return { enhancedPrompt: prompt, enhancedNegative: negativePrompt };
         }
@@ -544,8 +447,7 @@ class PollinationsProvider {
             style = "none", 
             autoOptimize = true, 
             autoHD = true, 
-            qualityMode = 'standard',
-            enableChineseBoost = false
+            qualityMode = 'standard'
         } = options;
         
         let hdOptimization = null;
@@ -556,7 +458,6 @@ class PollinationsProvider {
         
         const modelConfig = this.config.models.find(m => m.id === model);
         const is4KModel = modelConfig?.max_size === 4096;
-        const supportsChineseText = modelConfig?.supports_chinese_text || false;
         
         const promptComplexity = PromptAnalyzer.analyzeComplexity(prompt);
         const recommendedQuality = PromptAnalyzer.recommendQualityMode(prompt, model);
@@ -564,8 +465,7 @@ class PollinationsProvider {
             complexity: (promptComplexity * 100).toFixed(1) + '%', 
             recommended_quality: recommendedQuality, 
             selected_quality: qualityMode,
-            is_4k_model: is4KModel,
-            supports_chinese: supportsChineseText
+            is_4k_model: is4KModel
         });
         
         if (autoHD) {
@@ -576,8 +476,7 @@ class PollinationsProvider {
                 width, 
                 height, 
                 qualityMode, 
-                autoHD,
-                enableChineseBoost && supportsChineseText
+                autoHD
             );
             finalPrompt = hdOptimization.prompt;
             finalNegativePrompt = hdOptimization.negativePrompt;
@@ -591,7 +490,6 @@ class PollinationsProvider {
                     original: `${width}x${height}`, 
                     optimized: `${finalWidth}x${finalHeight}`, 
                     upscaled: hdOptimization.size_upscaled, 
-                    chinese_boost: hdOptimization.chinese_boost_applied,
                     details: hdOptimization.optimizations 
                 });
             }
@@ -641,7 +539,6 @@ class PollinationsProvider {
             quality_mode: qualityMode, 
             hd_optimized: autoHD && hdOptimization?.optimized, 
             auto_translated: translation.translated,
-            chinese_boost: enableChineseBoost && supportsChineseText,
             steps: finalSteps, 
             guidance: finalGuidance 
         });
@@ -692,7 +589,6 @@ class PollinationsProvider {
                                 quality_mode: qualityMode, 
                                 hd_optimized: autoHD && hdOptimization?.optimized, 
                                 auto_translated: translation.translated,
-                                chinese_optimized: enableChineseBoost && supportsChineseText,
                                 seed: currentSeed 
                             });
                             
@@ -713,7 +609,6 @@ class PollinationsProvider {
                                 hd_optimized: autoHD && hdOptimization?.optimized, 
                                 hd_details: hdOptimization, 
                                 auto_translated: translation.translated,
-                                chinese_text_optimized: enableChineseBoost && supportsChineseText,
                                 cost: "FREE", 
                                 fallback_used: tryModel !== model, 
                                 auto_optimized: autoOptimize 
@@ -813,12 +708,11 @@ export default {
           timestamp: new Date().toISOString(),
           features: [
             '4K Ultra HD Support',
-            'Chinese Text Rendering',
             'Generation Timer',
             'Full History',
-            '19 Models',
-            '15+ Styles',
-            'Nano Banana Enhanced'
+            '17 Models',
+            '8 Styles',
+            'Smart Optimization'
           ]
         }), { headers: corsHeaders({ 'Content-Type': 'application/json' }) });
       } else {
@@ -826,13 +720,12 @@ export default {
           project: CONFIG.PROJECT_NAME, 
           version: CONFIG.PROJECT_VERSION, 
           features: [
-            '19 Models', 
-            '15+ Styles', 
+            '17 Models', 
+            '8 Styles', 
             '4 Quality Modes', 
             'Smart Analysis', 
             'Auto HD', 
-            '4K Support 🍌', 
-            'Chinese Text Optimization 🍌',
+            '4K Support 🍌',
             'Generation Timer ⏱️',
             'Full History 📜',
             'Auto Translation'
@@ -898,8 +791,7 @@ async function handleChatCompletions(request, env) {
             style: body.style || "none", 
             autoOptimize: body.auto_optimize !== false, 
             autoHD: body.auto_hd !== false, 
-            qualityMode: body.quality_mode || 'standard',
-            enableChineseBoost: body.enable_chinese_boost === true
+            qualityMode: body.quality_mode || 'standard'
         };
         
         const router = new MultiProviderRouter({}, env);
@@ -999,8 +891,7 @@ async function handleImageGenerations(request, env) {
             style: body.style || "none", 
             autoOptimize: body.auto_optimize !== false, 
             autoHD: body.auto_hd !== false, 
-            qualityMode: body.quality_mode || 'standard',
-            enableChineseBoost: body.enable_chinese_boost === true
+            qualityMode: body.quality_mode || 'standard'
         };
         
         const router = new MultiProviderRouter({}, env);
@@ -1024,7 +915,6 @@ async function handleImageGenerations(request, env) {
                 auto_optimized: r.auto_optimized, 
                 hd_optimized: r.hd_optimized, 
                 auto_translated: r.auto_translated,
-                chinese_text_optimized: r.chinese_text_optimized,
                 cost: r.cost 
             })) 
         }), { headers: corsHeaders({ 'Content-Type': 'application/json' }) });
@@ -1057,8 +947,6 @@ function handleModelsRequest() {
                     experimental: model.experimental || false, 
                     description: model.description,
                     max_size: model.max_size || 2048,
-                    supports_chinese_text: model.supports_chinese_text || false,
-                    supports_multi_image: model.supports_multi_image || false,
                     ultra_hd: model.ultra_hd || false
                 });
             }
@@ -1089,23 +977,12 @@ function handleProvidersRequest() {
 }
 
 function handleStylesRequest() {
-    const styles = [
-        ...Object.entries(CONFIG.STYLE_PRESETS).map(([key, value]) => ({ 
-            id: key, 
-            name: value.name, 
-            prompt_addition: value.prompt, 
-            negative_addition: value.negative,
-            category: 'general'
-        })),
-        ...Object.entries(CONFIG.NANO_BANANA_PRESETS).map(([key, value]) => ({
-            id: key,
-            name: value.name,
-            prompt_addition: value.prompt,
-            negative_addition: value.negative,
-            recommended_size: value.recommended_size,
-            category: 'nano_banana_exclusive'
-        }))
-    ];
+    const styles = Object.entries(CONFIG.STYLE_PRESETS).map(([key, value]) => ({ 
+        id: key, 
+        name: value.name, 
+        prompt_addition: value.prompt, 
+        negative_addition: value.negative
+    }));
     return new Response(JSON.stringify({ 
         object: 'list', 
         data: styles 
@@ -1127,18 +1004,11 @@ h1{color:#f59e0b;margin:0;font-size:36px;font-weight:800;text-shadow:0 0 30px rg
 .badge{background:linear-gradient(135deg,#10b981 0%,#059669 100%);padding:6px 14px;border-radius:20px;font-size:14px;margin-left:10px}
 .badge-4k{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;margin-left:8px}
 .subtitle{color:#9ca3af;margin-top:8px;font-size:15px}
-.mode-toggle{display:flex;gap:10px;margin-bottom:20px}
-.mode-btn{padding:10px 20px;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);color:#9ca3af;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s}
-.mode-btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(245,158,11,0.5)}
-.mode-btn.active{background:linear-gradient(135deg,#fbbf24 0%,#f59e0b 100%);border-color:#f59e0b;color:#000}
 .history-btn{background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.3s;position:relative}
 .history-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.4)}
 .history-badge{position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}@media (max-width:768px){.grid{grid-template-columns:1fr}}
 .box{background:rgba(26,26,26,0.95);padding:24px;border-radius:16px;border:1px solid rgba(255,255,255,0.1)}h3{color:#f59e0b;margin-bottom:18px;font-size:18px;font-weight:700}label{display:block;margin:16px 0 8px 0;color:#e5e7eb;font-weight:600;font-size:13px}
-.banana-panel{border:2px solid #f59e0b;background:rgba(245,158,11,0.05);display:none}
-.banana-panel h3{color:#fbbf24}
-.checkbox-group{display:flex;align-items:center;gap:10px;margin:12px 0}.checkbox-group input[type="checkbox"]{width:auto;margin:0}
 select,textarea,input{width:100%;padding:12px;margin:0;background:#2a2a2a;border:1px solid #444;color:#fff;border-radius:10px;font-size:14px;font-family:inherit;transition:all 0.3s}select:focus,textarea:focus,input:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.15)}textarea{resize:vertical;min-height:90px}
 button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;transition:all 0.3s;box-shadow:0 4px 15px rgba(245,158,11,0.4)}button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.6)}button:disabled{background:#555;cursor:not-allowed;transform:none;box-shadow:none}
 .result-meta{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);padding:8px 12px;border-radius:8px;margin-top:8px;font-size:12px;color:#10b981}
@@ -1162,14 +1032,9 @@ button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97
 <div class="header">
 <div class="header-left">
 <h1>🎨 Flux AI Pro<span class="badge">v${CONFIG.PROJECT_VERSION}</span><span class="badge-4k">4K 🍌</span></h1>
-<p class="subtitle">計時器 · 歷史記錄 · 4K超清 · 繁中文字 · 智能優化</p>
+<p class="subtitle">計時器 · 歷史記錄 · 4K超清 · 智能優化</p>
 </div>
 <button onclick="toggleHistory()" class="history-btn">📜 歷史<span id="historyBadge" class="history-badge" style="display:none">0</span></button>
-</div>
-
-<div class="mode-toggle">
-<button class="mode-btn all active" onclick="switchMode('all')">🎨 全部模型</button>
-<button class="mode-btn banana" onclick="switchMode('banana')">🍌 Nano Banana Pro</button>
 </div>
 
 <div class="grid">
@@ -1197,19 +1062,6 @@ button{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b 0%,#d97
 <select id="style">
 <option value="none">無</option>
 ${Object.entries(CONFIG.STYLE_PRESETS).map(([k,v])=>'<option value="'+k+'">'+v.name+'</option>').join('')}
-</select>
-<div class="checkbox-group">
-<input type="checkbox" id="enableChineseBoost">
-<label for="enableChineseBoost" style="margin:0">🍌 繁體中文文字優化</label>
-</div>
-</div>
-
-<div class="box" id="bananaPanel" style="display:none">
-<h3>🍌 Nano Banana 專屬預設</h3>
-<label>快速模板</label>
-<select id="bananaPreset" onchange="applyBananaPreset()">
-<option value="">選擇模板...</option>
-${Object.entries(CONFIG.NANO_BANANA_PRESETS).map(([k,v])=>'<option value="'+k+'">'+v.name+'</option>').join('')}
 </select>
 </div>
 
@@ -1252,8 +1104,6 @@ ${Object.entries(CONFIG.PRESET_SIZES).map(([k,v])=>'<option value="'+k+'">'+v.na
 
 <script>
 const PRESETS=${JSON.stringify(CONFIG.PRESET_SIZES)};
-const BANANA_PRESETS=${JSON.stringify(CONFIG.NANO_BANANA_PRESETS)};
-let currentMode='all';
 let generationHistory=[];
 
 function loadHistory(){
@@ -1347,20 +1197,6 @@ renderHistory();
 }
 }
 
-function switchMode(mode){
-currentMode=mode;
-const modelSelect=document.getElementById('model');
-const bananaPanel=document.getElementById('bananaPanel');
-if(mode==='banana'){
-modelSelect.value='nanobanana-pro';
-bananaPanel.style.display='block';
-document.getElementById('qualityMode').value='ultra_4k';
-document.getElementById('enableChineseBoost').checked=true;
-}else{
-bananaPanel.style.display='none';
-}
-}
-
 function applySizePreset(){
 const preset=PRESETS[document.getElementById('sizePreset').value];
 if(preset){
@@ -1368,24 +1204,6 @@ document.getElementById('width').value=preset.width;
 document.getElementById('height').value=preset.height;
 document.getElementById('widthValue').textContent=preset.width;
 document.getElementById('heightValue').textContent=preset.height;
-}
-}
-
-function applyBananaPreset(){
-const presetKey=document.getElementById('bananaPreset').value;
-if(!presetKey)return;
-const preset=BANANA_PRESETS[presetKey];
-if(preset){
-document.getElementById('prompt').value=preset.prompt;
-if(preset.recommended_size){
-const sizes=preset.recommended_size.split('x');
-const w=parseInt(sizes[0]);
-const h=parseInt(sizes[1]);
-document.getElementById('width').value=w;
-document.getElementById('height').value=h;
-document.getElementById('widthValue').textContent=w;
-document.getElementById('heightValue').textContent=h;
-}
 }
 }
 
@@ -1409,7 +1227,6 @@ style:document.getElementById('style').value,
 width:parseInt(document.getElementById('width').value),
 height:parseInt(document.getElementById('height').value),
 quality_mode:document.getElementById('qualityMode').value,
-enable_chinese_boost:document.getElementById('enableChineseBoost').checked,
 auto_optimize:true,
 auto_hd:true
 };
@@ -1441,10 +1258,9 @@ clearInterval(timerInterval);
 resultDiv.innerHTML='<div style="background:rgba(16,185,129,0.15);border:1px solid #10b981;padding:16px;border-radius:12px;color:#10b981"><strong>✅ 生成成功!</strong><span class="timer">⏱️ '+duration+'</span></div>';
 data.data.forEach(function(item,index){
 const is4K=item.is_4k?'<span class="tag-4k">4K</span>':'';
-const chineseOpt=item.chinese_text_optimized?' | 🍌 繁中優化':'';
 const imgDiv=document.createElement('div');
 imgDiv.style.marginTop='20px';
-imgDiv.innerHTML='<img src="'+item.url+'" style="width:100%;border-radius:12px;cursor:pointer"><div class="result-meta">'+item.model+' | '+item.width+'x'+item.height+is4K+' | '+item.quality_mode+chineseOpt+' | <span class="timer">⏱️ '+duration+'</span></div>';
+imgDiv.innerHTML='<img src="'+item.url+'" style="width:100%;border-radius:12px;cursor:pointer"><div class="result-meta">'+item.model+' | '+item.width+'x'+item.height+is4K+' | '+item.quality_mode+' | <span class="timer">⏱️ '+duration+'</span></div>';
 imgDiv.querySelector('img').onclick=function(){window.open(item.url);};
 resultDiv.appendChild(imgDiv);
 
