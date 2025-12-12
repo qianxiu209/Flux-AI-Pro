@@ -3,7 +3,6 @@
 //  版本: 9.3.4 (24種藝術風格)
 //  作者: Enhanced by AI Assistant  
 //  日期: 2025-12-12
-//  功能: 本地上傳 | 圖生圖 | 多圖融合 | 多張生成 | 24種藝術風格
 // =================================================================================
 
 const CONFIG = {
@@ -70,41 +69,27 @@ const CONFIG = {
   
   STYLE_PRESETS: {
     none: { name: "無 (使用原始提示詞)", prompt: "", negative: "" },
-    
-    // 動漫系列
     "anime": { name: "動漫風格 ✨", prompt: "anime style, anime art, vibrant colors, anime character, detailed anime", negative: "realistic, photograph, 3d, ugly" },
     "manga": { name: "日本漫畫 📖", prompt: "manga style, black and white manga, manga art, comic book style, Japanese manga, ink drawing, screen tone", negative: "colored, realistic, photograph, 3d" },
     "chibi": { name: "Q版可愛 🎀", prompt: "chibi style, cute chibi character, kawaii, adorable, big eyes, super deformed, pastel colors", negative: "realistic, detailed anatomy, mature" },
-    
-    // 寫實系列
     "photorealistic": { name: "寫實照片 📷", prompt: "photorealistic, ultra realistic, 8k uhd, professional photography, detailed, sharp focus, DSLR quality", negative: "anime, cartoon, illustration, painting, low quality" },
     "cinematic": { name: "電影風格 🎬", prompt: "cinematic lighting, movie still, dramatic lighting, film grain, anamorphic lens, bokeh, depth of field, cinematic color grading", negative: "amateur, flat lighting, overexposed" },
     "portrait": { name: "人像攝影 👤", prompt: "professional portrait photography, studio lighting, shallow depth of field, 85mm lens, bokeh background, high detail", negative: "full body, landscape, low quality" },
-    
-    // 繪畫系列
     "oil-painting": { name: "油畫 🎨", prompt: "oil painting, classical oil painting style, visible brushstrokes, rich colors, artistic, canvas texture", negative: "photograph, digital art, anime, flat" },
     "watercolor": { name: "水彩畫 💧", prompt: "watercolor painting, soft colors, watercolor texture, artistic, hand-painted, flowing colors, paper texture", negative: "photograph, digital, sharp edges, 3d" },
     "sketch": { name: "素描 ✏️", prompt: "pencil sketch, hand-drawn, sketch art, graphite drawing, artistic sketch, detailed line work", negative: "colored, painted, digital, photograph" },
     "ink-painting": { name: "水墨畫 🖌️", prompt: "Chinese ink painting, traditional ink wash painting, monochrome, brush strokes, minimalist, artistic", negative: "colored, western art, photograph" },
-    
-    // 數位藝術系列
     "digital-art": { name: "數位藝術 💻", prompt: "digital art, digital painting, concept art, detailed illustration, professional artwork, vibrant colors", negative: "photograph, traditional media, sketchy" },
     "pixel-art": { name: "像素藝術 🕹️", prompt: "pixel art, 8bit style, retro game art, pixelated, sprite art, retro gaming aesthetic", negative: "high resolution, realistic, smooth, 3d" },
     "low-poly": { name: "低多邊形 🔷", prompt: "low poly art, geometric shapes, faceted design, minimalist 3d, polygon art, clean geometric style", negative: "high poly, detailed, realistic, organic" },
     "vaporwave": { name: "蒸汽波 🌴", prompt: "vaporwave aesthetic, retro futuristic, neon colors, glitch art, 80s aesthetic, palm trees, grid background", negative: "realistic, natural colors, modern" },
-    
-    // 幻想系列
     "fantasy": { name: "奇幻風格 🐉", prompt: "fantasy art, magical, epic fantasy, detailed fantasy illustration, mythical, enchanted", negative: "modern, realistic, mundane, contemporary" },
     "cyberpunk": { name: "賽博朋克 🌃", prompt: "cyberpunk style, neon lights, futuristic, sci-fi, dystopian, high-tech low-life, cybernetic", negative: "natural, rustic, medieval, pastoral" },
     "steampunk": { name: "蒸汽朋克 ⚙️", prompt: "steampunk style, Victorian era, brass and copper, gears and cogs, steam-powered, industrial revolution aesthetic", negative: "modern, digital, minimalist" },
-    
-    // 特殊風格
     "horror": { name: "恐怖風格 👻", prompt: "horror art, dark atmosphere, eerie, creepy, mysterious, dramatic shadows, unsettling, gothic", negative: "bright, cheerful, cute, colorful" },
     "minimalist": { name: "極簡主義 ⚪", prompt: "minimalist design, simple, clean lines, negative space, minimal colors, modern minimalism", negative: "detailed, complex, ornate, cluttered" },
     "abstract": { name: "抽象藝術 🎭", prompt: "abstract art, non-representational, geometric shapes, color field, experimental, avant-garde", negative: "realistic, figurative, detailed objects" },
     "pop-art": { name: "普普藝術 🎪", prompt: "pop art style, bold colors, comic book style, Andy Warhol inspired, halftone dots, vibrant, retro", negative: "realistic, muted colors, traditional" },
-    
-    // 遊戲風格
     "studio-ghibli": { name: "吉卜力風格 🏯", prompt: "Studio Ghibli style, Hayao Miyazaki art style, anime background, beautiful scenery, whimsical, hand-painted", negative: "realistic, dark, gritty, western cartoon" },
     "disney": { name: "迪士尼風格 🏰", prompt: "Disney animation style, Disney character design, 3D animated, Pixar style, colorful, family-friendly", negative: "realistic, anime, dark, gritty" },
     "comic-book": { name: "美式漫畫 💥", prompt: "American comic book style, superhero comic art, bold outlines, dynamic action, halftone dots, vibrant colors", negative: "realistic, manga, photograph" }
@@ -152,10 +137,10 @@ const CONFIG = {
   HD_OPTIMIZATION: {
     enabled: true,
     QUALITY_MODES: {
-      economy: { name: "經濟模式", description: "快速出圖,適合測試", min_resolution: 1024, max_resolution: 2048, steps_multiplier: 0.85, guidance_multiplier: 0.9, hd_level: "basic" },
-      standard: { name: "標準模式", description: "平衡質量與速度", min_resolution: 1280, max_resolution: 2048, steps_multiplier: 1.0, guidance_multiplier: 1.0, hd_level: "enhanced" },
-      ultra: { name: "超高清模式", description: "極致質量,耗時較長", min_resolution: 1536, max_resolution: 4096, steps_multiplier: 1.35, guidance_multiplier: 1.15, hd_level: "maximum", force_upscale: true },
-      ultra_4k: { name: "4K超高清", description: "Nano Banana Pro 專屬", min_resolution: 2048, max_resolution: 4096, steps_multiplier: 1.5, guidance_multiplier: 1.2, hd_level: "ultra_4k", force_upscale: true, exclusive_models: ["nanobanana-pro"] }
+      economy: { name: "經濟模式", description: "快速出圖", min_resolution: 1024, max_resolution: 2048, steps_multiplier: 0.85, guidance_multiplier: 0.9, hd_level: "basic" },
+      standard: { name: "標準模式", description: "平衡質量", min_resolution: 1280, max_resolution: 2048, steps_multiplier: 1.0, guidance_multiplier: 1.0, hd_level: "enhanced" },
+      ultra: { name: "超高清模式", description: "極致質量", min_resolution: 1536, max_resolution: 4096, steps_multiplier: 1.35, guidance_multiplier: 1.15, hd_level: "maximum", force_upscale: true },
+      ultra_4k: { name: "4K超高清", description: "4K專屬", min_resolution: 2048, max_resolution: 4096, steps_multiplier: 1.5, guidance_multiplier: 1.2, hd_level: "ultra_4k", force_upscale: true, exclusive_models: ["nanobanana-pro"] }
     },
     HD_PROMPTS: {
       basic: "high quality, detailed, sharp",
@@ -202,7 +187,6 @@ const CONFIG = {
     STORAGE_KEY: "flux_ai_history"
   }
 };
-
 class Logger {
     constructor() { this.logs = []; }
     add(step, data) {
@@ -684,7 +668,6 @@ function corsHeaders(additionalHeaders = {}) {
         ...additionalHeaders 
     };
 }
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -1017,7 +1000,6 @@ function handleStylesRequest() {
         total: styles.length
     }), { headers: corsHeaders({ 'Content-Type': 'application/json' }) });
 }
-
 function handleUI() {
   const html = `<!DOCTYPE html>
 <html lang="zh-TW">
@@ -1237,7 +1219,13 @@ function setPrompt(text){
 document.getElementById('prompt').value=text;
 document.getElementById('prompt').focus();
 }
+`;
 
+  return new Response(html + getUIScriptPart2(), { headers: corsHeaders({ 'Content-Type': 'text/html; charset=utf-8' }) });
+}
+
+function getUIScriptPart2() {
+  return `
 document.getElementById('refImageUrl').addEventListener('keypress',function(e){
 if(e.key==='Enter'){
 const url=this.value.trim();
@@ -1420,9 +1408,175 @@ function removeRefImage(index){
 referenceImages.splice(index,1);
 renderReferenceImages();
 }
+`;
+}
+function getUIScriptPart2() {
+  return `
+document.getElementById('refImageUrl').addEventListener('keypress',function(e){
+if(e.key==='Enter'){
+const url=this.value.trim();
+if(url){
+try{
+new URL(url);
+const model=document.getElementById('model').value;
+const maxRef=getMaxReferenceImages(model);
+if(referenceImages.length>=maxRef){
+alert('此模型最多支持 '+maxRef+' 張參考圖');
+return;
+}
+referenceImages.push(url);
+this.value='';
+renderReferenceImages();
+}catch{
+alert('請輸入有效的圖片 URL');
+}
+}
+}
+});
+
+document.getElementById('fileInput').addEventListener('change',async function(e){
+await handleFiles(e.target.files);
+this.value='';
+});
+
+const uploadArea=document.getElementById('uploadArea');
+uploadArea.addEventListener('dragover',function(e){
+e.preventDefault();
+this.classList.add('dragover');
+});
+uploadArea.addEventListener('dragleave',function(e){
+e.preventDefault();
+this.classList.remove('dragover');
+});
+uploadArea.addEventListener('drop',async function(e){
+e.preventDefault();
+this.classList.remove('dragover');
+await handleFiles(e.dataTransfer.files);
+});
+
+async function handleFiles(files){
+const model=document.getElementById('model').value;
+const maxRef=getMaxReferenceImages(model);
+const remaining=maxRef-referenceImages.length;
+if(remaining<=0){
+alert('此模型最多支持 '+maxRef+' 張參考圖');
+return;
+}
+const filesToProcess=Array.from(files).slice(0,remaining);
+for(const file of filesToProcess){
+if(!file.type.startsWith('image/')){
+alert(file.name+' 不是有效的圖片文件');
+continue;
+}
+if(file.size>MAX_FILE_SIZE){
+alert(file.name+' 超過 10MB 限制');
+continue;
+}
+await uploadImage(file);
+}
+}
+
+async function uploadImage(file){
+const tempId='temp-'+Date.now()+'-'+Math.random();
+referenceImages.push({id:tempId,uploading:true});
+renderReferenceImages();
+try{
+const base64=await fileToBase64(file);
+const uploadedUrl=await uploadToImageHost(base64,file.name);
+const index=referenceImages.findIndex(img=>img.id===tempId);
+if(index!==-1){
+referenceImages[index]=uploadedUrl;
+renderReferenceImages();
+}
+}catch(error){
+console.error('Upload error:',error);
+const index=referenceImages.findIndex(img=>img.id===tempId);
+if(index!==-1){
+referenceImages.splice(index,1);
+renderReferenceImages();
+}
+alert('上傳失敗: '+error.message);
+}
+}
+
+function fileToBase64(file){
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.onerror=reject;
+reader.readAsDataURL(file);
+});
+}
+
+async function uploadToImageHost(base64,filename){
+try{
+const response=await fetch('https://api.imgur.com/3/image',{
+method:'POST',
+headers:{'Authorization':'Client-ID 2afc620eb108124','Content-Type':'application/json'},
+body:JSON.stringify({image:base64.split(',')[1],type:'base64',name:filename})
+});
+const data=await response.json();
+if(data.success)return data.data.link;
+throw new Error('Imgur failed');
+}catch(imgurError){
+console.error('Imgur failed:',imgurError);
+try{
+const formData=new FormData();
+formData.append('image',base64.split(',')[1]);
+const response=await fetch('https://api.imgbb.com/1/upload?key=d36eb6591370ae7f9089d85875e56b22',{method:'POST',body:formData});
+const data=await response.json();
+if(data.success)return data.data.url;
+throw new Error('ImgBB failed');
+}catch(e){
+console.error('ImgBB failed:',e);
+return base64;
+}
+}
+}
+
+function getMaxReferenceImages(model){
+const config=${JSON.stringify(CONFIG.PROVIDERS.pollinations.models)};
+const m=config.find(x=>x.id===model);
+return m?.max_reference_images||0;
+}
+
+function updateRefImageLimit(){
+const model=document.getElementById('model').value;
+const maxRef=getMaxReferenceImages(model);
+const section=document.getElementById('refImageLimit');
+if(maxRef>0){
+section.textContent='此模型最多支持 '+maxRef+' 張參考圖 (已添加 '+referenceImages.length+'/'+maxRef+')';
+section.style.color='#10b981';
+}else{
+section.textContent='此模型不支持參考圖';
+section.style.color='#ef4444';
+}
+}
+
+function renderReferenceImages(){
+const list=document.getElementById('refImageList');
+list.innerHTML='';
+referenceImages.forEach((item,index)=>{
+const div=document.createElement('div');
+div.className='ref-img-item';
+if(typeof item==='object'&&item.uploading){
+div.innerHTML='<div style="width:80px;height:80px;background:#2a2a2a;border-radius:8px;border:2px dashed #ec4899;display:flex;align-items:center;justify-content:center"><div class="spinner"></div></div>';
+}else{
+const url=typeof item==='object'?item.url:item;
+div.innerHTML='<img src="'+url+'"><button class="ref-img-remove" onclick="removeRefImage('+index+')">×</button>';
+}
+list.appendChild(div);
+});
+updateRefImageLimit();
+}
+
+function removeRefImage(index){
+referenceImages.splice(index,1);
+renderReferenceImages();
+}
 
 function loadHistory(){
-console.log('✓ History loaded (session only - v9.3.4)');
+console.log('✓ History (session only - v9.3.4)');
 updateHistoryBadge();
 }
 
@@ -1445,8 +1599,7 @@ badge.style.display='none';
 }
 
 function toggleHistory(){
-const modal=document.getElementById('historyModal');
-modal.style.display='block';
+document.getElementById('historyModal').style.display='block';
 renderHistory();
 }
 
@@ -1467,4 +1620,194 @@ div.className='history-item';
 const modeTag=item.generation_mode?'<span class="tag-mode">'+item.generation_mode+'</span>':'';
 const styleTag=item.style&&item.style!=='none'?'<span class="tag-style">'+item.style+'</span>':'';
 const refCount=item.reference_images_count>0?' | '+item.reference_images_count+'張參考圖':'';
-div.innerHTML='<div style="display:flex;gap:15px"><img src="'+item.url+'" class="history-img" onclick="window.open(\\''+item.url+'\\')"><div style="flex:1"><p style="color:#f59e0b;font-weight:600">'+item.prompt.substring(0,50)+'...'+modeTag+styleTag+'</p><div class
+div.innerHTML='<div style="display:flex;gap:15px"><img src="'+item.url+'" class="history-img" onclick="window.open(\\''+item.url+'\\')"><div style="flex:1"><p style="color:#f59e0b;font-weight:600">'+item.prompt.substring(0,50)+'...'+modeTag+styleTag+'</p><div class="history-info">'+item.model+' | '+item.width+'x'+item.height+refCount+' | '+(item.duration||'N/A')+'</div><div class="history-info">'+new Date(item.timestamp).toLocaleString('zh-TW')+'</div><div class="history-actions"><button onclick="regenFromHistory('+index+')">🔄 重新生成</button><button onclick="deleteHistory('+index+')" style="background:#ef4444">🗑️ 刪除</button></div></div></div>';
+list.appendChild(div);
+});
+}
+
+function regenFromHistory(index){
+const item=generationHistory[index];
+document.getElementById('prompt').value=item.prompt;
+document.getElementById('model').value=item.model;
+document.getElementById('width').value=item.width;
+document.getElementById('height').value=item.height;
+document.getElementById('widthValue').textContent=item.width;
+document.getElementById('heightValue').textContent=item.height;
+if(item.negative_prompt)document.getElementById('negativePrompt').value=item.negative_prompt;
+if(item.style)document.getElementById('style').value=item.style;
+if(item.quality_mode)document.getElementById('qualityMode').value=item.quality_mode;
+if(item.reference_images){
+referenceImages=item.reference_images;
+renderReferenceImages();
+}
+closeHistory();
+alert('已載入歷史配置!');
+}
+
+function deleteHistory(index){
+if(confirm('確定刪除此記錄?')){
+generationHistory.splice(index,1);
+updateHistoryBadge();
+renderHistory();
+}
+}
+
+function clearHistory(){
+if(confirm('確定清空所有歷史記錄?')){
+generationHistory=[];
+updateHistoryBadge();
+renderHistory();
+}
+}
+
+function applySizePreset(){
+const preset=PRESETS[document.getElementById('sizePreset').value];
+if(preset){
+document.getElementById('width').value=preset.width;
+document.getElementById('height').value=preset.height;
+document.getElementById('widthValue').textContent=preset.width;
+document.getElementById('heightValue').textContent=preset.height;
+}
+}
+
+document.getElementById('width').oninput=function(){document.getElementById('widthValue').textContent=this.value;};
+document.getElementById('height').oninput=function(){document.getElementById('heightValue').textContent=this.value;};
+
+window.onclick=function(event){
+const modal=document.getElementById('historyModal');
+if(event.target===modal)modal.style.display='none';
+};
+
+async function generate(){
+const prompt=document.getElementById('prompt').value.trim();
+if(!prompt){alert('請輸入提示詞');return;}
+
+const validRefImages=referenceImages.filter(img=>typeof img==='string'||!img.uploading);
+if(validRefImages.length<referenceImages.length){
+alert('請等待圖片上傳完成');
+return;
+}
+
+const numOutputs=parseInt(document.getElementById('numOutputs').value);
+const params={
+prompt:prompt,
+negative_prompt:document.getElementById('negativePrompt').value,
+model:document.getElementById('model').value,
+style:document.getElementById('style').value,
+width:parseInt(document.getElementById('width').value),
+height:parseInt(document.getElementById('height').value),
+quality_mode:document.getElementById('qualityMode').value,
+n:numOutputs,
+auto_optimize:true,
+auto_hd:true,
+reference_images:validRefImages
+};
+
+const resultDiv=document.getElementById('result');
+const button=document.querySelector('button[onclick="generate()"]');
+button.disabled=true;
+
+const startTime=Date.now();
+let timerInterval;
+button.textContent='生成中 ⏱️ 0.0s';
+
+timerInterval=setInterval(()=>{
+const elapsed=((Date.now()-startTime)/1000).toFixed(1);
+button.textContent='生成中 ⏱️ '+elapsed+'s';
+},100);
+
+try{
+const response=await fetch('/v1/images/generations',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(params)
+});
+const data=await response.json();
+if(!response.ok)throw new Error(data.error?.message||'生成失敗');
+
+const duration=((Date.now()-startTime)/1000).toFixed(1)+'s';
+clearInterval(timerInterval);
+
+const numGenerated=data.data.length;
+resultDiv.innerHTML='<div style="background:rgba(16,185,129,0.15);border:1px solid #10b981;padding:16px;border-radius:12px;color:#10b981;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><strong>✅ 生成成功!</strong> 共 '+numGenerated+' 張<span class="timer">⏱️ '+duration+'</span></div>'+(numGenerated>1?'<button onclick="downloadAllImages()" style="width:auto;padding:10px 20px;margin:0;background:linear-gradient(135deg,#10b981 0%,#059669 100%)">📥 下載全部 ('+numGenerated+')</button>':'')+'</div>';
+
+window.currentBatchImages=data.data.map(item=>({url:item.url,filename:'flux-'+item.seed+'.png'}));
+
+data.data.forEach(function(item,index){
+const is4K=item.is_4k?'<span class="tag-4k">4K</span>':'';
+const modeTag=item.generation_mode?'<span class="tag-mode">'+item.generation_mode+'</span>':'';
+const styleTag=item.style&&item.style!=='none'?'<span class="tag-style">'+item.style+'</span>':'';
+const imgDiv=document.createElement('div');
+imgDiv.style.marginTop='20px';
+imgDiv.innerHTML='<div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:12px"><h4 style="color:#f59e0b;margin-bottom:10px">圖片 '+(index+1)+'/'+numGenerated+' <span style="color:#9ca3af;font-size:14px;font-weight:400">Seed: '+item.seed+'</span></h4><img src="'+item.url+'" style="width:100%;border-radius:12px;cursor:pointer;transition:transform 0.3s" onmouseover="this.style.transform=\\'scale(1.02)\\'" onmouseout="this.style.transform=\\'scale(1)\\'"><div class="result-meta">'+item.model+' | '+item.width+'x'+item.height+is4K+modeTag+styleTag+' | '+item.quality_mode+' | <span class="timer">⏱️ '+duration+'</span></div><div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button onclick="window.open(\\''+item.url+'\\')" style="width:auto;padding:8px 16px;margin:0;font-size:13px">🔗 新窗口</button><button onclick="downloadImage(\\''+item.url+'\\',\\'flux-'+item.seed+'.png\\')" style="width:auto;padding:8px 16px;margin:0;font-size:13px;background:linear-gradient(135deg,#10b981 0%,#059669 100%)">💾 下載</button><button onclick="copyToClipboard(\\''+item.url+'\\')" style="width:auto;padding:8px 16px;margin:0;font-size:13px;background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%)">📋 複製URL</button></div></div>';
+imgDiv.querySelector('img').onclick=function(){window.open(item.url);};
+resultDiv.appendChild(imgDiv);
+
+addToHistory({
+url:item.url,
+prompt:params.prompt,
+negative_prompt:params.negative_prompt,
+model:item.model,
+width:item.width,
+height:item.height,
+style:params.style,
+quality_mode:params.quality_mode,
+reference_images:item.reference_images||[],
+reference_images_count:item.reference_images_count||0,
+generation_mode:item.generation_mode||'Text-to-Image',
+duration:duration
+});
+});
+}catch(error){
+clearInterval(timerInterval);
+resultDiv.innerHTML='<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;padding:16px;border-radius:12px;color:#ef4444"><strong>❌ 錯誤:</strong> '+error.message+'</div>';
+}finally{
+button.disabled=false;
+button.textContent='🚀 開始生成';
+}
+}
+
+async function downloadImage(url,filename){
+try{
+const response=await fetch(url);
+const blob=await response.blob();
+const link=document.createElement('a');
+link.href=URL.createObjectURL(blob);
+link.download=filename;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+URL.revokeObjectURL(link.href);
+}catch(error){
+alert('下載失敗,請右鍵另存為');
+window.open(url,'_blank');
+}
+}
+
+async function downloadAllImages(){
+if(!window.currentBatchImages||window.currentBatchImages.length===0){
+alert('沒有可下載的圖片');
+return;
+}
+for(let i=0;i<window.currentBatchImages.length;i++){
+const img=window.currentBatchImages[i];
+await downloadImage(img.url,img.filename);
+await new Promise(resolve=>setTimeout(resolve,500));
+}
+alert('已下載 '+window.currentBatchImages.length+' 張圖片!');
+}
+
+function copyToClipboard(text){
+navigator.clipboard.writeText(text).then(()=>{
+alert('✅ URL 已複製!');
+}).catch(()=>{
+prompt('複製此 URL:',text);
+});
+}
+
+loadHistory();
+updateRefImageLimit();
+</script>
+</body>
+</html>`;
+}
