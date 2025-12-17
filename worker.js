@@ -1,22 +1,22 @@
 // =================================================================================
 //  項目: Flux AI Pro
-//  版本: 9.5.2-bytes (返回圖片字節數據)
+//  版本: 9.6.0-gen-api (✅ 更新至 gen.pollinations.ai)
 //  作者: Enhanced by AI Assistant  
 //  日期: 2025-12-17
-//  更新: ✅ 返回圖片字節而非 URL | ✅ 支持單/多圖生成 | ✅ Base64 編碼
+//  更新: ✅ 新 API 端點 | ✅ 必需 API Key | ✅ Bearer Token 認證
 //  模型: zimage, flux, turbo, kontext (4個模型)
 // =================================================================================
 
 const CONFIG = {
   PROJECT_NAME: "Flux-AI-Pro",
-  PROJECT_VERSION: "9.5.2-bytes",
+  PROJECT_VERSION: "9.6.0-gen-api",
   API_MASTER_KEY: "1",
   FETCH_TIMEOUT: 120000,
   MAX_RETRIES: 3,
   
   POLLINATIONS_AUTH: {
-    enabled: false,
-    token: "",
+    enabled: true,        // ✅ 改為 true，啟用認證
+    token: "",            // ✅ 將從 env.POLLINATIONS_API_KEY 讀取
     method: "header"
   },
   
@@ -33,14 +33,14 @@ const CONFIG = {
   PROVIDERS: {
     pollinations: {
       name: "Pollinations.ai",
-      endpoint: "https://image.pollinations.ai",
-      pathPrefix: "",
+      endpoint: "https://gen.pollinations.ai",  // ✅ 更新為新端點
+      pathPrefix: "/image",                      // ✅ 新增路徑前綴
       type: "direct",
-      auth_mode: "optional",
-      requires_key: false,
+      auth_mode: "required",  // ✅ 改為必需認證
+      requires_key: true,     // ✅ 標記需要 API Key
       enabled: true,
       default: true,
-      description: "官方 AI 圖像生成服務（基於官方模型列表）",
+      description: "官方 AI 圖像生成服務（需要 API Key）",
       features: {
         private_mode: true,
         custom_size: true,
@@ -421,6 +421,8 @@ function corsHeaders(additionalHeaders = {}) {
 }
 // =================================================================================
 // 第 3 段：PollinationsProvider 核心生成類（返回圖片字節）
+// ✅ 已更新至 gen.pollinations.ai 端點
+// ✅ 已加入必需的 Bearer Token 認證
 // =================================================================================
 
 class PollinationsProvider {
@@ -589,8 +591,9 @@ class PollinationsProvider {
         
         const encodedPrompt = encodeURIComponent(fullPrompt);
         
+        // ✅ 更新 URL 構建邏輯：使用新的 /image/{prompt} 格式
         const pathPrefix = this.config.pathPrefix || "";
-        let baseUrl = this.config.endpoint + pathPrefix + "/prompt/" + encodedPrompt;
+        let baseUrl = this.config.endpoint + pathPrefix + "/" + encodedPrompt;
         
         const params = new URLSearchParams();
         params.append('model', model);
@@ -618,18 +621,22 @@ class PollinationsProvider {
             'Referer': 'https://pollinations.ai/'
         };
         
+        // ✅ 加入必需的 Bearer Token 認證
         const authConfig = CONFIG.POLLINATIONS_AUTH;
         if (authConfig.enabled && authConfig.token) {
             headers['Authorization'] = `Bearer ${authConfig.token}`;
             logger.add("🔐 API Authentication", { 
                 method: "Bearer Token",
                 token_prefix: authConfig.token.substring(0, 8) + "...",
-                enabled: true
+                enabled: true,
+                endpoint: this.config.endpoint
             });
         } else {
-            logger.add("🔓 Anonymous Mode", { 
+            logger.add("⚠️ No API Key", { 
                 authenticated: false,
-                note: "未配置 API Key,使用匿名模式"
+                note: "新 API 端點需要 API Key，請設置 POLLINATIONS_API_KEY 環境變量",
+                endpoint: this.config.endpoint,
+                warning: "未認證的請求可能會失敗"
             });
         }
         
@@ -637,9 +644,10 @@ class PollinationsProvider {
         
         logger.add("📡 API Request", { 
             endpoint: this.config.endpoint,
-            path: pathPrefix + "/prompt/" + encodedPrompt.substring(0, 50) + "...",
+            path: pathPrefix + "/" + encodedPrompt.substring(0, 50) + "...",
             model: model,
-            authenticated: authConfig.enabled
+            authenticated: authConfig.enabled && !!authConfig.token,
+            full_url: url.substring(0, 100) + "..."
         });
         
         for (let retry = 0; retry < CONFIG.MAX_RETRIES; retry++) {
@@ -662,7 +670,7 @@ class PollinationsProvider {
                             auto_translated: translation.translated,
                             reference_images_used: validReferenceImages.length,
                             generation_mode: validReferenceImages.length > 0 ? "圖生圖" : "文生圖",
-                            authenticated: authConfig.enabled,
+                            authenticated: authConfig.enabled && !!authConfig.token,
                             seed: currentSeed 
                         });
                         
@@ -671,7 +679,7 @@ class PollinationsProvider {
                         const imageBuffer = await imageBlob.arrayBuffer();
                         
                         return { 
-                            // ✅ 新增：返回圖片字節數據
+                            // ✅ 返回圖片字節數據
                             imageData: imageBuffer,
                             contentType: contentType,
                             
@@ -694,26 +702,35 @@ class PollinationsProvider {
                             reference_images: validReferenceImages,
                             reference_images_count: validReferenceImages.length,
                             generation_mode: validReferenceImages.length > 0 ? "圖生圖" : "文生圖",
-                            authenticated: authConfig.enabled,
+                            authenticated: authConfig.enabled && !!authConfig.token,
                             cost: "FREE", 
                             auto_optimized: autoOptimize 
                         };
                     } else {
                         throw new Error("Invalid content type: " + contentType);
                     }
+                } else if (response.status === 401) {
+                    // ✅ 專門處理認證失敗
+                    throw new Error("Authentication failed: Invalid or missing API key. Please set POLLINATIONS_API_KEY");
+                } else if (response.status === 403) {
+                    throw new Error("Access forbidden: API key may lack required permissions");
                 } else {
-                    throw new Error("HTTP " + response.status);
+                    throw new Error("HTTP " + response.status + ": " + (await response.text()).substring(0, 200));
                 }
             } catch (e) {
                 logger.add("❌ Request Failed", { 
                     error: e.message, 
                     model: model, 
                     retry: retry + 1,
-                    max_retries: CONFIG.MAX_RETRIES
+                    max_retries: CONFIG.MAX_RETRIES,
+                    endpoint: this.config.endpoint
                 });
                 
                 if (retry < CONFIG.MAX_RETRIES - 1) {
                     await new Promise(resolve => setTimeout(resolve, 1000 * (retry + 1)));
+                } else {
+                    // 最後一次重試失敗，拋出詳細錯誤
+                    throw new Error("Generation failed: " + e.message);
                 }
             }
         }
@@ -765,6 +782,7 @@ class MultiProviderRouter {
 }
 // =================================================================================
 // 第 4 段：主入口和內部生成函數（返回圖片字節）
+// ✅ 已加入 API Key 環境變量讀取邏輯
 // =================================================================================
 
 export default {
@@ -773,9 +791,15 @@ export default {
         const startTime = Date.now();
         const clientIP = getClientIP(request);
         
+        // ✅ 從環境變量讀取 API Key 並設置到 CONFIG
         if (env.POLLINATIONS_API_KEY) {
             CONFIG.POLLINATIONS_AUTH.enabled = true;
             CONFIG.POLLINATIONS_AUTH.token = env.POLLINATIONS_API_KEY;
+        } else {
+            // ✅ 如果沒有 API Key，記錄警告
+            console.warn("⚠️ POLLINATIONS_API_KEY not set - requests may fail on new API endpoint");
+            CONFIG.POLLINATIONS_AUTH.enabled = false;
+            CONFIG.POLLINATIONS_AUTH.token = "";
         }
         
         console.log("=== Web UI Request ===");
@@ -784,6 +808,7 @@ export default {
         console.log("Method:", request.method);
         console.log("Workers AI:", !!env.AI);
         console.log("API Auth:", CONFIG.POLLINATIONS_AUTH.enabled ? "✅ Enabled" : "❌ Disabled");
+        console.log("API Endpoint:", CONFIG.PROVIDERS.pollinations.endpoint);
         console.log("=====================");
         
         if (request.method === 'OPTIONS') {
@@ -806,7 +831,8 @@ export default {
                     api_auth: {
                         enabled: CONFIG.POLLINATIONS_AUTH.enabled,
                         method: CONFIG.POLLINATIONS_AUTH.method,
-                        has_token: !!CONFIG.POLLINATIONS_AUTH.token
+                        has_token: !!CONFIG.POLLINATIONS_AUTH.token,
+                        endpoint: CONFIG.PROVIDERS.pollinations.endpoint
                     },
                     models: CONFIG.PROVIDERS.pollinations.models.map(m => ({
                         id: m.id,
@@ -819,7 +845,7 @@ export default {
                 response = new Response(JSON.stringify({
                     error: 'Not Found',
                     message: '此 Worker 僅提供 Web UI 界面',
-                    available_paths: ['/', '/health']
+                    available_paths: ['/', '/health', '/_internal/generate']
                 }), { 
                     status: 404,
                     headers: corsHeaders({ 'Content-Type': 'application/json' }) 
@@ -841,7 +867,8 @@ export default {
                 error: {
                     message: error.message,
                     type: 'worker_error',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    duration_ms: duration
                 }
             }), {
                 status: 500,
@@ -859,6 +886,16 @@ async function handleInternalGenerate(request, env, ctx) {
         const body = await request.json();
         const prompt = body.prompt;
         if (!prompt || !prompt.trim()) throw new Error("Prompt is required");
+        
+        // ✅ 檢查 API Key 是否已設置
+        if (!CONFIG.POLLINATIONS_AUTH.enabled || !CONFIG.POLLINATIONS_AUTH.token) {
+            logger.add("⚠️ API Key Warning", {
+                status: "missing",
+                message: "POLLINATIONS_API_KEY 未設置，請求可能會失敗",
+                endpoint: CONFIG.PROVIDERS.pollinations.endpoint,
+                recommendation: "請使用 'wrangler secret put POLLINATIONS_API_KEY' 設置 API Key"
+            });
+        }
         
         let width = 1024, height = 1024;
         if (body.width) width = body.width;
@@ -927,6 +964,7 @@ async function handleInternalGenerate(request, env, ctx) {
                     'X-Style': result.style,
                     'X-Generation-Mode': result.generation_mode || '文生圖',
                     'X-Authenticated': result.authenticated ? 'true' : 'false',
+                    'X-API-Endpoint': CONFIG.PROVIDERS.pollinations.endpoint,
                     ...corsHeaders()
                 }
             });
@@ -962,11 +1000,14 @@ async function handleInternalGenerate(request, env, ctx) {
         return new Response(JSON.stringify({ 
             created: Math.floor(Date.now() / 1000), 
             data: imagesData.filter(d => d !== null),
-            generation_time_ms: duration
+            generation_time_ms: duration,
+            api_endpoint: CONFIG.PROVIDERS.pollinations.endpoint,
+            authenticated: CONFIG.POLLINATIONS_AUTH.enabled
         }), { 
             headers: corsHeaders({ 
                 'Content-Type': 'application/json',
-                'X-Generation-Time': duration + 'ms'
+                'X-Generation-Time': duration + 'ms',
+                'X-API-Endpoint': CONFIG.PROVIDERS.pollinations.endpoint
             }) 
         });
         
@@ -975,7 +1016,9 @@ async function handleInternalGenerate(request, env, ctx) {
         return new Response(JSON.stringify({ 
             error: { 
                 message: e.message, 
-                debug_logs: logger.get() 
+                debug_logs: logger.get(),
+                api_endpoint: CONFIG.PROVIDERS.pollinations.endpoint,
+                authenticated: CONFIG.POLLINATIONS_AUTH.enabled
             } 
         }), { 
             status: 400, 
@@ -985,12 +1028,15 @@ async function handleInternalGenerate(request, env, ctx) {
 }
 // =================================================================================
 // 第 5 段：完整 Web UI 界面（處理圖片字節響應）
+// ✅ 已更新 API 端點顯示
 // =================================================================================
 
 function handleUI() {
   const authStatus = CONFIG.POLLINATIONS_AUTH.enabled ? 
     '<span style="color:#22c55e;font-weight:600;font-size:12px">🔐 已認證</span>' : 
-    '<span style="color:#f59e0b;font-weight:600;font-size:12px">🔓 匿名模式</span>';
+    '<span style="color:#f59e0b;font-weight:600;font-size:12px">⚠️ 需要 API Key</span>';
+    
+  const apiEndpoint = CONFIG.PROVIDERS.pollinations.endpoint;
     
   const html = `<!DOCTYPE html>
 <html lang="zh-TW">
@@ -1013,6 +1059,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .nav-btn:hover{border-color:#f59e0b;color:#fff}
 .nav-btn.active{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#fff;border-color:#f59e0b}
 .api-status{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(16,185,129,0.1);border:1px solid #10b981}
+.api-endpoint{font-size:10px;color:#6b7280;margin-top:4px}
 .main-content{flex:1;display:flex;overflow:hidden}
 .left-panel{width:320px;background:rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.1);overflow-y:auto;padding:20px;flex-shrink:0}
 .center-panel{flex:1;padding:20px;overflow-y:auto}
@@ -1062,6 +1109,7 @@ select{cursor:pointer}
 .alert{padding:12px 15px;border-radius:8px;margin-bottom:15px;border-left:4px solid;font-size:13px}
 .alert-success{background:rgba(16,185,129,0.1);border-color:#10b981;color:#10b981}
 .alert-error{background:rgba(239,68,68,0.1);border-color:#ef4444;color:#ef4444}
+.alert-warning{background:rgba(245,158,11,0.1);border-color:#f59e0b;color:#f59e0b}
 .advanced-toggle{cursor:pointer;color:#3b82f6;font-size:13px;margin-bottom:12px;display:inline-block}
 .advanced-toggle:hover{text-decoration:underline}
 .advanced-section{display:none;animation:fadeIn 0.3s}
@@ -1089,8 +1137,11 @@ select{cursor:pointer}
 <div class="container">
 <div class="top-nav">
 <div class="nav-left">
-<div class="logo">🎨 Flux AI Pro<span class="badge">v${CONFIG.PROJECT_VERSION}</span><span class="badge-new">圖片字節</span></div>
+<div class="logo">🎨 Flux AI Pro<span class="badge">v${CONFIG.PROJECT_VERSION}</span><span class="badge-new">NEW API</span></div>
+<div>
 <div class="api-status">${authStatus}</div>
+<div class="api-endpoint">📡 ${apiEndpoint}</div>
+</div>
 </div>
 <div class="nav-menu">
 <button class="nav-btn active" data-page="generate"><span>🎨</span> 生成圖像</button>
@@ -1208,6 +1259,7 @@ https://example.com/image2.jpg" rows="3"></textarea>
 <div class="prompt-display"><div class="label">模型</div><div class="content" id="previewModel">Z-Image Turbo</div></div>
 <div class="prompt-display"><div class="label">尺寸</div><div class="content" id="previewSize">1024x1024</div></div>
 <div class="prompt-display"><div class="label">風格</div><div class="content" id="previewStyle">無</div></div>
+<div class="prompt-display"><div class="label">API 端點</div><div class="content" style="font-size:11px">${apiEndpoint}</div></div>
 </div>
 </div>
 </div>
@@ -1269,7 +1321,7 @@ function displayGeneratedImages(images){const history=getHistory();const gallery
 const form=document.getElementById('generateForm');
 const resultsDiv=document.getElementById('results');
 const generateBtn=document.getElementById('generateBtn');
-form.addEventListener('submit',async(e)=>{e.preventDefault();const prompt=document.getElementById('prompt').value;if(!prompt.trim()){alert('請輸入提示詞');document.getElementById('prompt').focus();return}const model=document.getElementById('model').value;const sizePreset=document.getElementById('size').value;const style=document.getElementById('style').value;const qualityMode=document.getElementById('qualityMode').value;const seed=parseInt(document.getElementById('seed').value);const numOutputs=parseInt(document.getElementById('numOutputs').value);const negativePrompt=document.getElementById('negativePrompt').value;const autoOptimize=document.getElementById('autoOptimize').checked;const autoHD=document.getElementById('autoHD').checked;const refImagesInput=document.getElementById('referenceImages').value;let referenceImages=[];if(refImagesInput.trim()){referenceImages=refImagesInput.split(',').map(url=>url.trim()).filter(url=>url)}const sizes=${JSON.stringify(CONFIG.PRESET_SIZES)};const sizeConfig=sizes[sizePreset]||sizes['square-1k'];generateBtn.disabled=true;generateBtn.innerHTML='<div class="spinner"></div>生成中...';resultsDiv.innerHTML='<div class="loading"><div class="spinner"></div><p>正在生成圖像,請稍候...</p></div>';try{const response=await fetch('/_internal/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,model,width:sizeConfig.width,height:sizeConfig.height,style,quality_mode:qualityMode,seed:seed,n:numOutputs,negative_prompt:negativePrompt,auto_optimize:autoOptimize,auto_hd:autoHD,reference_images:referenceImages})});const contentType=response.headers.get('content-type');if(contentType&&contentType.startsWith('image/')){const imageBlob=await response.blob();const imageUrl=URL.createObjectURL(imageBlob);const modelUsed=response.headers.get('X-Model')||model;const seedUsed=parseInt(response.headers.get('X-Seed'))||seed;const widthUsed=parseInt(response.headers.get('X-Width'))||sizeConfig.width;const heightUsed=parseInt(response.headers.get('X-Height'))||sizeConfig.height;const qualityUsed=response.headers.get('X-Quality-Mode')||qualityMode;const genMode=response.headers.get('X-Generation-Mode')||'文生圖';addToHistory({url:imageUrl,prompt:prompt,model:modelUsed,seed:seedUsed,width:widthUsed,height:heightUsed,style:style,quality_mode:qualityUsed,negative_prompt:negativePrompt,reference_images:referenceImages,generation_mode:genMode});displayGeneratedImages([{url:imageUrl,model:modelUsed,seed:seedUsed,width:widthUsed,height:heightUsed,quality_mode:qualityUsed}])}else if(contentType&&contentType.includes('application/json')){const data=await response.json();if(data.error){resultsDiv.innerHTML='<div class="alert alert-error"><strong>錯誤:</strong> '+data.error.message+'</div>'}else{const images=data.data.map(item=>{addToHistory({url:item.image,prompt:prompt,model:item.model,seed:item.seed,width:item.width,height:item.height,style:style,quality_mode:item.quality_mode,negative_prompt:negativePrompt,reference_images:referenceImages,generation_mode:item.generation_mode});return item});displayGeneratedImages(images)}}}catch(error){resultsDiv.innerHTML='<div class="alert alert-error"><strong>錯誤:</strong> '+error.message+'</div>'}finally{generateBtn.disabled=false;generateBtn.innerHTML='🎨 開始生成'}});
+form.addEventListener('submit',async(e)=>{e.preventDefault();const prompt=document.getElementById('prompt').value;if(!prompt.trim()){alert('請輸入提示詞');document.getElementById('prompt').focus();return}const model=document.getElementById('model').value;const sizePreset=document.getElementById('size').value;const style=document.getElementById('style').value;const qualityMode=document.getElementById('qualityMode').value;const seed=parseInt(document.getElementById('seed').value);const numOutputs=parseInt(document.getElementById('numOutputs').value);const negativePrompt=document.getElementById('negativePrompt').value;const autoOptimize=document.getElementById('autoOptimize').checked;const autoHD=document.getElementById('autoHD').checked;const refImagesInput=document.getElementById('referenceImages').value;let referenceImages=[];if(refImagesInput.trim()){referenceImages=refImagesInput.split(',').map(url=>url.trim()).filter(url=>url)}const sizes=${JSON.stringify(CONFIG.PRESET_SIZES)};const sizeConfig=sizes[sizePreset]||sizes['square-1k'];generateBtn.disabled=true;generateBtn.innerHTML='<div class="spinner"></div>生成中...';resultsDiv.innerHTML='<div class="loading"><div class="spinner"></div><p>正在生成圖像,請稍候...</p><p style="font-size:12px;color:#6b7280;margin-top:10px">API: ${apiEndpoint}</p></div>';try{const response=await fetch('/_internal/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,model,width:sizeConfig.width,height:sizeConfig.height,style,quality_mode:qualityMode,seed:seed,n:numOutputs,negative_prompt:negativePrompt,auto_optimize:autoOptimize,auto_hd:autoHD,reference_images:referenceImages})});const contentType=response.headers.get('content-type');if(!response.ok){const errorText=await response.text();let errorMsg='生成失敗';try{const errorJson=JSON.parse(errorText);errorMsg=errorJson.error?.message||errorMsg}catch(e){errorMsg=errorText.substring(0,200)}resultsDiv.innerHTML='<div class="alert alert-error"><strong>錯誤:</strong> '+errorMsg+'</div>';if(response.status===401||response.status===403){resultsDiv.innerHTML+='<div class="alert alert-warning"><strong>⚠️ 認證問題:</strong> 請確保已設置有效的 POLLINATIONS_API_KEY 環境變量。<br>使用命令: <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">wrangler secret put POLLINATIONS_API_KEY</code></div>'}return}if(contentType&&contentType.startsWith('image/')){const imageBlob=await response.blob();const imageUrl=URL.createObjectURL(imageBlob);const modelUsed=response.headers.get('X-Model')||model;const seedUsed=parseInt(response.headers.get('X-Seed'))||seed;const widthUsed=parseInt(response.headers.get('X-Width'))||sizeConfig.width;const heightUsed=parseInt(response.headers.get('X-Height'))||sizeConfig.height;const qualityUsed=response.headers.get('X-Quality-Mode')||qualityMode;const genMode=response.headers.get('X-Generation-Mode')||'文生圖';addToHistory({url:imageUrl,prompt:prompt,model:modelUsed,seed:seedUsed,width:widthUsed,height:heightUsed,style:style,quality_mode:qualityUsed,negative_prompt:negativePrompt,reference_images:referenceImages,generation_mode:genMode});displayGeneratedImages([{url:imageUrl,model:modelUsed,seed:seedUsed,width:widthUsed,height:heightUsed,quality_mode:qualityUsed}])}else if(contentType&&contentType.includes('application/json')){const data=await response.json();if(data.error){resultsDiv.innerHTML='<div class="alert alert-error"><strong>錯誤:</strong> '+data.error.message+'</div>'}else{const images=data.data.map(item=>{addToHistory({url:item.image,prompt:prompt,model:item.model,seed:item.seed,width:item.width,height:item.height,style:style,quality_mode:item.quality_mode,negative_prompt:negativePrompt,reference_images:referenceImages,generation_mode:item.generation_mode});return item});displayGeneratedImages(images)}}}catch(error){resultsDiv.innerHTML='<div class="alert alert-error"><strong>錯誤:</strong> '+error.message+'</div>'}finally{generateBtn.disabled=false;generateBtn.innerHTML='🎨 開始生成'}});
 window.addEventListener('DOMContentLoaded',()=>{updateHistoryStats();updatePreview()});
 </script>
 </body>
