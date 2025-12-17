@@ -10,19 +10,19 @@ const CONFIG = {
   PROVIDERS: {
     pollinations: {
       name: "Pollinations.ai",
-      endpoint: "https://gen.pollinations.ai",  // ← 新端點
-      pathPrefix: "/image",                      // ← 路徑前綴
+      endpoint: "https://gen.pollinations.ai",
+      pathPrefix: "/image",
       type: "direct",
-      requiresAuth: true                         // ← 需要認證
+      requiresAuth: true
     }
   },
   
   // ✅ 更新：認證配置
   POLLINATIONS_AUTH: {
-    enabled: true,                               // ← 默認啟用
-    token: "",                                   // 將從環境變量讀取
-    method: "bearer",                            // ← Bearer Token
-    headerName: "Authorization"                  // ← Header 名稱
+    enabled: true,
+    token: "",
+    method: "bearer",
+    headerName: "Authorization"
   },
   
   // 模型配置
@@ -273,7 +273,7 @@ function buildMultipleURLs(params, config, count) {
   for (let i = 0; i < count; i++) {
     const singleParams = {
       ...params,
-      seed: baseSeed + i  // 每張圖片使用不同的種子
+      seed: baseSeed + i
     };
     urls.push(buildPollinationsURL(singleParams, config));
   }
@@ -386,16 +386,16 @@ async function requestWithRetry(url, config, maxRetries = 3) {
 // ============================================
 
 /**
- * ✅ 更新：生成單張圖片
+ * ✅ 生成單張圖片
  */
 async function generateSingleImage(params, env) {
   const config = initializeConfig(env);
   
   try {
     // 1. 驗證參數
-    const errors = validateParams(params);
-    if (errors.length > 0) {
-      throw new Error(`Parameter validation failed: ${errors.join(', ')}`);
+    const validationErrors = validateParams(params);
+    if (validationErrors.length > 0) {
+      throw new Error(`Parameter validation failed: ${validationErrors.join(', ')}`);
     }
     
     // 2. 設置默認值
@@ -415,7 +415,7 @@ async function generateSingleImage(params, env) {
       height: height,
       seed: seed,
       nologo: params.nologo || false,
-      private: params.private !== false,  // 默認私有
+      private: params.private !== false,
       enhance: params.enhance || false,
       safe: params.safe || false
     };
@@ -475,7 +475,7 @@ async function generateSingleImage(params, env) {
 }
 
 /**
- * ✅ 更新：生成多張圖片
+ * ✅ 修復：生成多張圖片（已修復變量衝突）
  */
 async function generateMultipleImages(params, env) {
   const config = initializeConfig(env);
@@ -483,9 +483,9 @@ async function generateMultipleImages(params, env) {
   
   try {
     // 驗證參數
-    const errors = validateParams(params);
-    if (errors.length > 0) {
-      throw new Error(errors.join(', '));
+    const validationErrors = validateParams(params);
+    if (validationErrors.length > 0) {
+      throw new Error(validationErrors.join(', '));
     }
     
     // 優化提示詞
@@ -500,13 +500,13 @@ async function generateMultipleImages(params, env) {
     
     // 處理結果
     const images = [];
-    const errors = [];
+    const failedRequests = [];
     
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
       
       if (result.error) {
-        errors.push({ index: i, error: result.error });
+        failedRequests.push({ index: i, error: result.error });
       } else {
         const base64 = btoa(
           String.fromCharCode(...new Uint8Array(result))
@@ -526,7 +526,7 @@ async function generateMultipleImages(params, env) {
       success: true,
       count: images.length,
       images: images,
-      errors: errors.length > 0 ? errors : undefined,
+      errors: failedRequests.length > 0 ? failedRequests : undefined,
       timestamp: new Date().toISOString()
     }), {
       status: 200,
@@ -664,7 +664,7 @@ function handleOptions() {
   });
 }
 // ============================================
-// 🎨 Web UI HTML 界面
+// 🎨 Web UI HTML 界面（完整）
 // ============================================
 
 /**
@@ -839,12 +839,14 @@ function getWebUI() {
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
     }
     
     .image-container img {
       max-width: 100%;
       height: auto;
       display: block;
+      margin-bottom: 15px;
     }
     
     .loading {
@@ -925,6 +927,10 @@ function getWebUI() {
       
       .header h1 {
         font-size: 1.5em;
+      }
+      
+      .content {
+        padding: 20px;
       }
     }
   </style>
@@ -1260,3 +1266,4 @@ export default {
     }
   }
 };
+
