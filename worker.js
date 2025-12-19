@@ -16,7 +16,7 @@ const CONFIG = {
   
   POLLINATIONS_AUTH: {
     enabled: true,
-    token: "",  // 將從 env.POLLINATIONS_API_KEY 讀取
+    token: "pk_CKVNCRK9d7ua0cjl",  // 將從 env.POLLINATIONS_API_KEY 讀取
     method: "header"
   },
   
